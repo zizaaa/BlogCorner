@@ -5,9 +5,9 @@ function RootLayout() {
     return (
         <main className="font-nunito">
             <Navbar/>
-            <section className="max-w-screen-xl mx-auto p-4 flex flex-row h-screen pt-20 overflow-hidden">
+            <section className="max-w-screen-xl mx-auto p-4 flex flex-row h-screen pt-20 overflow-hidden ">
                 <SideNav/>
-                <div className="h-screen overflow-y-auto w-full">
+                <div className="overflow-y-auto w-full">
                     <Outlet/>
                 </div>
             </section>

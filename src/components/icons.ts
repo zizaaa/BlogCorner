@@ -1,7 +1,15 @@
-import { FaHome } from "react-icons/fa";
-import { FaBookmark } from "react-icons/fa";
+import { FaHome,FaBookmark,FaMoon,FaSun,FaRegBookmark } from "react-icons/fa";
+import { ImExit } from "react-icons/im";
+import { FaArrowDownLong,FaArrowUpLong,FaLink  } from "react-icons/fa6";
 
 export {
     FaHome,
-    FaBookmark
+    FaBookmark,
+    FaMoon,
+    FaSun,
+    ImExit,
+    FaArrowDownLong,
+    FaArrowUpLong,
+    FaLink,
+    FaRegBookmark
 }
