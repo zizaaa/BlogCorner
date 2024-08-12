@@ -1,4 +1,7 @@
 import Bookmark from "../pages/Bookmark/Bookmark";
+import FormLayout from "../pages/forms/FormLayout";
+import Login from "../pages/forms/Login";
+import Register from "../pages/forms/Register";
 import Home from "../pages/Home/Home";
 import RootLayout from "../pages/RootLayout";
 import BlogCard from "./cards/BlogCard";
@@ -11,5 +14,8 @@ export {
     SideNav,
     Home,
     Bookmark,
-    BlogCard
+    BlogCard,
+    FormLayout,
+    Login,
+    Register
 }

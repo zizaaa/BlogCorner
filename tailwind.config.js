@@ -12,9 +12,12 @@ export default {
       },
       colors:{
         "white":"#FEFFFE",
+        "semiWhite":"#fefefe",
         "grayishWhite":"#E5E7E9",
         "darkishGray":"#444444",
-        "darkCyan":"#4D99BC"
+        "darkCyan":"#4D99BC",
+        "black":"#131213",
+        "semiBlack":"#1D1D1D"
       }
     },
   },
