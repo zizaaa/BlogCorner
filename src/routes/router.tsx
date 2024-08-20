@@ -6,7 +6,8 @@ import
         Home,
         Login,
         Register,
-        RootLayout 
+        RootLayout,
+        ViewBlog
     } from '../components/links'
 
 export const router = createBrowserRouter([
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
             {
                 path:'bookmark',
                 element:<Bookmark/>
+            },
+            {
+                path:'blog/:id',
+                element:<ViewBlog/>
             }
         ]
     },
