@@ -1,9 +1,14 @@
 import { Outlet } from "react-router-dom"
-import { Navbar, SideNav } from "../components/links"
+import { fetchUser, Navbar, SideNav } from "../components/links"
 import { useEffect, useState } from "react"
 
 function RootLayout() {
     const [isDarkMode, setDarkMode] = useState<boolean>(false);
+
+    const { data, isLoading, isError } = fetchUser();
+
+    // console.log(data)
+    console.log(isError)
 
     const toggleDarkMode = ():void =>{
         // Toggle isDark state and update localStorage

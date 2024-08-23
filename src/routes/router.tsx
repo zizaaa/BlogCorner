@@ -7,7 +7,9 @@ import
         Login,
         Register,
         RootLayout,
-        ViewBlog
+        ViewBlog,
+        ProtectedRoute,
+        LogedIn
     } from '../components/links'
 
 export const router = createBrowserRouter([
@@ -21,17 +23,25 @@ export const router = createBrowserRouter([
             },
             {
                 path:'bookmark',
-                element:<Bookmark/>
+                element:(
+                    <ProtectedRoute>
+                        <Bookmark/>
+                    </ProtectedRoute>
+                )
             },
             {
                 path:'blog/:id',
-                element:<ViewBlog/>
+                element:(
+                    <ProtectedRoute>
+                        <ViewBlog/>
+                    </ProtectedRoute>
+                )
             }
         ]
     },
     {
         path:'/form',
-        element:<FormLayout/>,
+        element:(<LogedIn><FormLayout/></LogedIn>),
         children:[
             {
                 path:'login',

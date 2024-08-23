@@ -37,7 +37,7 @@ function SideNav() {
                     <span>
                         <ImExit/>
                     </span>
-                    Sign out
+                    Sign in
                 </button>
             </div>
         </aside>

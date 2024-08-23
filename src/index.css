@@ -1,10 +1,12 @@
+/* Import statements should be at the top */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+/* Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
-
-/* For WebKit browsers (such as Chrome and Safari) */
+/* Custom CSS */
 ::-webkit-scrollbar {
     width: 8px; /* width of the scrollbar */
     height: 8px;
@@ -23,13 +25,13 @@
     background-color: #4D99BC; /* color of the thumb on hover */
 }
 
-    /* remove up and down arrow on input type number */
-    input::-webkit-outer-spin-button,
-            input::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-            }
+/* Remove up and down arrows on input type number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
-            input[type="number"] {
-                -moz-appearance: textfield;
-            }
+input[type="number"] {
+    -moz-appearance: textfield;
+}
