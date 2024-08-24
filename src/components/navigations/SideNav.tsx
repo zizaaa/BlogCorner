@@ -1,7 +1,16 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { FaHome, FaBookmark, ImExit, FaPlus} from "../icons"
+import { propsType } from '../../types/Props'
+import { cookieStore } from '../links';
 
-function SideNav() {
+function SideNav(props:propsType) {
+    const { deleteCookie } = cookieStore();
+    const navigate = useNavigate();
+
+    const handleLogout = ()=>{
+        deleteCookie();
+        location.reload();
+    }
     return (
         <aside className="flex flex-col justify-between w-72 border-e-[1px] dark:border-semiBlack pe-2">
             <div>
@@ -33,12 +42,24 @@ function SideNav() {
                 </NavLink>
             </div>
             <div className='w-full'>
-                <button className="w-full p-2 px-4 flex items-center gap-2 text-xl transition-all duration-200 rounded-sm text-darkishGray hover:bg-grayishWhite dark:hover:bg-semiBlack dark:hover:text-grayishWhite">
-                    <span>
-                        <ImExit/>
-                    </span>
-                    Sign in
-                </button>
+                {
+                    props.isError ?
+                    (
+                        <button onClick={()=>{navigate('/form/login')}} className="w-full p-2 px-4 flex items-center gap-2 text-xl transition-all duration-200 rounded-sm text-darkishGray hover:bg-grayishWhite dark:hover:bg-semiBlack dark:hover:text-grayishWhite">
+                            <span>
+                                <ImExit/>
+                            </span>
+                            Sign in
+                        </button>
+                    ):(
+                        <button onClick={handleLogout} className="w-full p-2 px-4 flex items-center gap-2 text-xl transition-all duration-200 rounded-sm text-darkishGray hover:bg-grayishWhite dark:hover:bg-semiBlack dark:hover:text-grayishWhite">
+                            <span>
+                                <ImExit/>
+                            </span>
+                            Sign out
+                        </button>
+                    )
+                }
             </div>
         </aside>
     )

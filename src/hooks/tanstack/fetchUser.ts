@@ -1,11 +1,9 @@
 import axios from "axios"
 import Cookies from 'js-cookie'
 import { useQuery } from "@tanstack/react-query";
+import { serverURL } from "../serverUrl";
 
 const fetchUser = ()=>{
-    const env = import.meta.env;
-    const serverURL = env.VITE_REACT_SERVER_URL;
-
     return useQuery({
         queryKey:['userData'],
         queryFn: async()=>{

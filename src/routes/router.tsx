@@ -9,7 +9,8 @@ import
         RootLayout,
         ViewBlog,
         ProtectedRoute,
-        LogedIn
+        LogedIn,
+        ForgotPassword
     } from '../components/links'
 
 export const router = createBrowserRouter([
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
             {
                 path:'register',
                 element:<Register/>
+            },
+            {
+                path:'forgot-password',
+                element:<ForgotPassword/>
             }
         ]
     }

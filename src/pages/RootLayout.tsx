@@ -7,9 +7,6 @@ function RootLayout() {
 
     const { data, isLoading, isError } = fetchUser();
 
-    // console.log(data)
-    console.log(isError)
-
     const toggleDarkMode = ():void =>{
         // Toggle isDark state and update localStorage
         const newIsDark:boolean = !isDarkMode;
@@ -29,9 +26,16 @@ function RootLayout() {
                 <Navbar 
                     toggleDarkMode={toggleDarkMode} 
                     isDarkMode={isDarkMode}
+                    isError={isError}
+                    isLoading={isLoading}
+                    data={data}
                 />
                 <section className="max-w-screen-xl mx-auto p-4 flex flex-row h-screen pt-20 overflow-hidden bg-white dark:bg-black">
-                    <SideNav/>
+                    <SideNav
+                        isError={isError}
+                        isLoading={isLoading}
+                        data={data}
+                    />
                     <div className="overflow-y-auto w-full">
                         <Outlet/>
                     </div>

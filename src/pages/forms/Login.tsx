@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 
 import { credentials } from "../../types/States";
-import { cookieStore, errorToast, successToast } from "../../components/links";
+import { cookieStore, errorToast, serverURL, Spinner, successToast } from "../../components/links";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 
 
 function Login() {
@@ -14,8 +15,31 @@ function Login() {
         password: ''
     });
 
-    const env = import.meta.env;
-    const serverURL = env.VITE_REACT_SERVER_URL;
+    const navigate = useNavigate();
+
+    const mutation = useMutation({
+        mutationFn:async(): Promise<void>=>{
+            try {
+                const {data} = await axios.post(`${serverURL}/api/user/login`,credentials)
+    
+                storeCookie(data.token)
+
+                successToast('Loged in success!')
+
+                navigate('/');
+                return;
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    return errorToast(`${error.response?.data.message}`);
+                } else {
+                    // Handle other errors, e.g., network issues, non-Axios errors
+                    console.log(error);
+                    errorToast('Something went wrong!');
+                    return;
+                }
+            }
+        }
+    })
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Prevent the default form submission
@@ -24,24 +48,7 @@ function Login() {
             return console.log('Incomplete input');
         }
 
-        try {
-            const {data} = await axios.post(`${serverURL}/api/user/login`,credentials)
-
-            storeCookie(data.token)
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.log(error.response?.data.message);
-                return errorToast(`${error.response?.data.message}`);
-            } else {
-                // Handle other errors, e.g., network issues, non-Axios errors
-                console.log(error);
-                return errorToast(`${error}`);
-            }
-        }
-
-        successToast('Loged in success!')
-        console.log('Submitted credentials:', credentials);
-        // Perform your login logic here
+        mutation.mutate();
     };
 
     return (
@@ -85,15 +92,22 @@ function Login() {
                 />
             </div>
             <div className="mb-5">
-                <button type="button" className="font-medium text-sm">
+                <Link to="/form/forgot-password" className="font-medium text-sm">
                     Forgot password
-                </button>
+                </Link>
             </div>
             <button
                 type="submit"
-                className="text-white bg-darkCyan focus:ring-4 focus:outline-none focus:ring-darkCyan font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
+                className="text-white bg-darkCyan focus:ring-4 focus:outline-none focus:ring-darkCyan font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center relative"
             >
-                Sign in
+                {
+                    mutation.isPending ?
+                    (
+                        Spinner({textColor:'#FFFFFF',fillColor:'#000000'})
+                    ):(
+                        'Sign in'
+                    )
+                }
             </button>
             <Link to='/form/register' className="mt-2">
                 Don't have an account yet? <span className="text-darkCyan">Sign up</span>
