@@ -15,7 +15,7 @@ function SideNav(props:propsType) {
         <aside className="flex flex-col justify-between w-72 border-e-[1px] dark:border-semiBlack pe-2">
             <div>
                 <div className='mb-5 border-b-[1px] pb-5 dark:border-semiBlack'>
-                    <button className="p-3 px-4 flex items-center gap-2 text-xl drop-shadow-md rounded-full transition-all duration-200 hover:scale-105 text-white dark:text-grayishWhite bg-darkCyan">
+                    <button onClick={()=>{navigate('/post/editor')}} className="p-3 px-4 flex items-center gap-2 text-xl drop-shadow-md rounded-full transition-all duration-200 hover:scale-105 text-white dark:text-grayishWhite bg-darkCyan">
                         <span>
                             <FaPlus/>
                         </span>

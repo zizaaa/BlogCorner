@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
+import axios from 'axios';
 import { Toaster } from 'react-hot-toast'
+import { FaArrowLeft } from '../../components/icons';
 import { errorToast, serverURL, Spinner, successToast } from '../../components/links';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function ForgotPassword() {
     const [email, setEmail] = useState<string>('');
@@ -44,7 +46,13 @@ function ForgotPassword() {
     return (
         <form className="p-5 rounded-md" onSubmit={handleResetPassword}>
             <Toaster />
-            <div>
+            <Link 
+                to='/form/login'
+                className='text-xl'
+            >
+                <FaArrowLeft />
+            </Link>
+            <div className='mt-5'>
                 <h1 className="text-5xl font-bold">Forgot password</h1>
             </div>
             <div className="my-5">

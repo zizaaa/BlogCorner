@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router-dom"
 import { FaArrowDownLong,FaArrowUpLong, FaBookmark, FaLink, FaRegBookmark } from "../icons"
 
 function BlogCard() {
+    const navigate = useNavigate();
+
     return (
-        <section className="border-[1px] p-3 rounded-sm cursor-pointer transition-all duration-100 hover:drop-shadow-md bg-semiWhite dark:bg-semiBlack dark:border-semiBlack">
+        <section onClick={()=>{navigate('/blog/423')}} className="border-[1px] p-3 rounded-sm cursor-pointer transition-all duration-100 hover:drop-shadow-md bg-semiWhite dark:bg-semiBlack dark:border-semiBlack">
             <div className="flex flex-row justify-between dark:text-grayishWhite">
                 <h1 className="text-2xl">Lorem ipsum dolor</h1>
                 <span className="text-sm font-thin">23mins ago</span>

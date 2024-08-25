@@ -35,3 +35,37 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+.prose ul {
+    list-style-type: disc;
+    margin-left: 1.5em;
+}
+
+.prose ol {
+    list-style-type: decimal;
+    margin-left: 1.5em;
+}
+
+.prose li {
+    margin-bottom: 0.5em;
+}
+
+.prose h1 {
+    @apply text-[2.5rem] font-bold;
+}
+
+.prose pre {
+    @apply bg-gray-800 text-white p-4 rounded-md overflow-x-auto;
+}
+
+.prose blockquote {
+    @apply border-l-4 border-gray-500 pl-4 italic text-gray-600;
+}
+
+.ProseMirror:focus {
+    outline: none;
+}
+
+.tiptap{
+    min-height: 10rem;
+}

@@ -10,7 +10,7 @@ function Navbar(props:any) {
                     <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BlogCorner</span>
                 </a>
                 <div className="w-auto flex flex-row gap-4" id="navbar-default">
-                    <button
+                    {/* <button
                         className="block py-2 px-3 rounded bg-semiWhite text-darkishGray dark:bg-semiBlack dark:text-white hover:drop-shadow-lg"
                         onClick={props.toggleDarkMode}
                     >
@@ -18,7 +18,7 @@ function Navbar(props:any) {
                             props.isDarkMode ?
                             (<FaSun/>):(<FaMoon/>)
                         }
-                    </button>
+                    </button> */}
                     <button data-popover-target="popover-click" data-popover-trigger="click" type="button" className='w-10 h-10 rounded-full cursor-pointer'>
                         <img 
                             src="https://www.shutterstock.com/image-photo/portrait-woman-symbolically-turning-into-600nw-2374079997.jpg"

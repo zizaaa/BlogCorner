@@ -17,6 +17,8 @@ import fetchUser from "../hooks/tanstack/fetchUser";
 import Spinner from "./loader/Spinner";
 import { serverURL } from "../hooks/serverUrl";
 import ForgotPassword from "../pages/forms/ForgotPassword";
+import PostEditor from "../pages/post/PostEditor";
+import Tiptap from "../pages/post/Tiptap";
 
 export {
     RootLayout,
@@ -37,5 +39,7 @@ export {
     fetchUser,
     Spinner,
     serverURL,
-    ForgotPassword
+    ForgotPassword,
+    PostEditor,
+    Tiptap
 }
