@@ -19,6 +19,8 @@ import { serverURL } from "../hooks/serverUrl";
 import ForgotPassword from "../pages/forms/ForgotPassword";
 import PostEditor from "../pages/post/PostEditor";
 import Tiptap from "../pages/post/Tiptap";
+import BlogLayout from "./blogs/BlogLayout";
+import BlogPreview from "../pages/Preview/BlogPreview";
 
 export {
     RootLayout,
@@ -41,5 +43,7 @@ export {
     serverURL,
     ForgotPassword,
     PostEditor,
-    Tiptap
+    Tiptap,
+    BlogLayout,
+    BlogPreview
 }
