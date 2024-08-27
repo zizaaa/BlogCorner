@@ -12,7 +12,7 @@
 ## Built With 🚀
 This project was built using these technologies:
 
-- MongoDB
+- PostgreSQL
 - Express.js
 - React.js
 - Node.js
