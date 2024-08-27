@@ -20,8 +20,6 @@ This project was built using these technologies:
 
 ## Features
 - 🚀 Optimized for web performance
-- 📚 Fully Responsive Design
-- 🌞 Light and Dark Theme Options
 - ✏️ Rich Text Editor for creating posts
 - 🔍 Advanced Search and Filtering
 - 👥 User Authentication and Profiles
