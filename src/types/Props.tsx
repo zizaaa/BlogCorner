@@ -1,3 +1,5 @@
+import { PreviewData } from "./Data";
+
 export interface ProtectedRouteProps{
     isAuthorized:boolean;
 }
@@ -22,4 +24,10 @@ export interface ColorProps{
     textColor:string;
     fillColor:string;
     darkModeColor?:string;
+}
+
+export interface BlogLayoutProps{
+    data?:PreviewData | null;
+    loading:boolean;
+    preview:boolean;
 }

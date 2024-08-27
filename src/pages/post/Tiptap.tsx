@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { FaAlignCenter, FaAlignLeft, FaAlignRight, FaBold, FaCode, FaHeading, FaItalic, FaParagraph, FaRedo, FaStrikethrough, FaTrashAlt, FaUnderline, FaUndo, GoListOrdered, IoEyeSharp, IoSend, MdFormatListBulleted, RiCodeBlock, TbBlockquote, VscHorizontalRule } from '../../components/icons'
+import { FaAlignCenter, FaAlignLeft, FaAlignRight, FaBold, FaCode, FaHeading, FaItalic, FaParagraph, FaRedo, FaStrikethrough, FaTrashAlt, FaUnderline, FaUndo, GoListOrdered, IoEyeSharp, IoSend, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, MdFormatListBulleted, TbBlockquote, VscHorizontalRule } from '../../components/icons'
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Heading from '@tiptap/extension-heading';
@@ -10,7 +10,10 @@ import Blockquote from '@tiptap/extension-blockquote';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
-import { BlogData } from '../../types/Data';
+import { BlogData, PreviewData } from '../../types/Data';
+import { errorToast, generateTimestamp } from '../../components/links';
+import { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const extensions = [
     StarterKit,
@@ -38,6 +41,8 @@ function Tiptap() {
     const [isCoverChange, setCoverChange] = useState<boolean>(false);
     const [isCoverLoading, setLoading] = useState<boolean>(false);
 
+    const navigate = useNavigate();
+    
     if (!editor) {
         return null;
     }
@@ -50,11 +55,12 @@ function Tiptap() {
 
                 reader.onload = (e)=>{
                     setSrc(e.target?.result as string);
-                    setCoverChange(true);
                     setLoading(false);
                 }
 
                 reader.readAsDataURL(file);
+
+                setCoverChange(true);
             }
     }
 
@@ -64,16 +70,38 @@ function Tiptap() {
     }
 
     const handleCancelCoverChange = () =>{
-        coverRef.current = null;
+        if(coverRef.current) {
+            coverRef.current.value = ''; // Reset the input value
+        }
         setCoverSrc('');
         setCoverChange(false);
     }
 
+    const isValidBlog = (blog:BlogData | PreviewData)=>{
+
+        if(!blog.cover){
+            errorToast('Please add your cover image!');
+            return false
+        }
+
+        if(!blog.title){
+            errorToast('Please add your blog title!');
+            return false
+        }
+
+        if (!blog.content || blog.content.replace(/<[^>]*>/g, '').trim() === '') {
+            errorToast('Please add your blog content!');
+            return false;
+        }        
+
+        return true;
+    }
+
     const handleSubmit = () => {
-        const editorContent = editor.getHTML(); // Get the editor's content as HTML
+        const editorContent = editor.getHTML(); 
 
         const blog:BlogData = {
-            cover:coverRef.current?.value,
+            cover: coverRef.current?.files ? coverRef.current.files[0] : null,
             title:title,
             content:editorContent
         }
@@ -81,12 +109,36 @@ function Tiptap() {
         console.log(blog)
     };
 
-    // const handlePreview = ()=>{
+    const handlePreview = () => {
+        const editorContent = editor.getHTML(); 
+    
+        const blog:PreviewData = {
+            cover: coverSrc,
+            title: title,
+            content: editorContent,
+            timestamp:generateTimestamp()
+        };
         
-    // }
+        if (!isValidBlog(blog)) {
+            return;
+        }
+    
+        // Generate a unique ID based on the current time
+        const id = new Date().getTime();
+    
+        // Convert the blog object to a JSON string
+        const blogJson = JSON.stringify(blog);
+    
+        // Save to session storage
+        sessionStorage.setItem(`${id}`, blogJson);
+        
+        //navigate
+        navigate(`/blog/preview/${id}`);
+    };    
 
     return (
         <div className="m-8">
+            <Toaster />
             <div className="w-full flex flex-col">
                 <div className='mb-5 w-full'>
                     {
@@ -112,36 +164,35 @@ function Tiptap() {
                                     <div className='absolute top-0 right-0 bottom-0 left-0 backdrop-blur-none group-hover:backdrop-blur-lg transition-all duration-300 bg-transparent group-hover:bg-[#21202048]'></div>
                                     <img 
                                         src={coverSrc}
-                                        className='object-cover w-full h-full'
+                                        className='object-contain w-full h-full bg-[#FFFF]'
                                         loading='lazy'
                                     />
                                 </div>
                             )
-                        ):(
-                            <div className="flex items-center justify-center w-full">
-                                <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-56 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                                        </svg>
-                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                    </div>
-                                    <input 
-                                        id="dropzone-file" 
-                                        type="file" 
-                                        className="hidden" 
-                                        onChange={handleCoverChange}
-                                        ref={coverRef}
-                                    />
-                                </label>
-                            </div> 
-                        )
+                        ):(null)
                     }
+                    <div className={`flex items-center justify-center w-full ${isCoverChange ? 'hidden':'block'}`}>
+                        <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-56 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500">
+                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                </svg>
+                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                            </div>
+                            <input 
+                                id="dropzone-file" 
+                                type="file" 
+                                className="hidden" 
+                                onChange={handleCoverChange}
+                                ref={coverRef}
+                            />
+                        </label>
+                    </div> 
                 </div>
                 <div className='w-full mb-5'>
                     <input 
                         type='text' 
-                        className='w-full border-x-0 border-t-0 text-3xl font-bold border-gray-300 focus:ring-transparent focus:border-darkCyan focus:placeholder:text-darkCyan'
+                        className='w-full border-x-0 border-t-0 text-3xl font-bold border-gray-300 bg-white focus:ring-transparent focus:border-darkCyan focus:placeholder:text-darkCyan'
                         placeholder='Title'
                         value={title}
                         onChange={(e)=>{setTitle(e.target.value)}}
@@ -203,6 +254,36 @@ function Tiptap() {
                         <FaHeading/>
                     </button>
                     <button
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                        className={`p-2 text-lg mx-1 hover:bg-[#4d99bc33] ${editor.isActive('heading', { level: 2 }) ? 'text-darkCyan bg-[#4d99bc33]' : 'text-gray-500'}`}
+                    >
+                        <LuHeading2/>
+                    </button>
+                    <button
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                        className={`p-2 text-lg mx-1 hover:bg-[#4d99bc33] ${editor.isActive('heading', { level: 3 }) ? 'text-darkCyan bg-[#4d99bc33]' : 'text-gray-500'}`}
+                    >
+                        <LuHeading3/>
+                    </button>
+                    <button
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+                        className={`p-2 text-lg mx-1 hover:bg-[#4d99bc33] ${editor.isActive('heading', { level: 4 }) ? 'text-darkCyan bg-[#4d99bc33]' : 'text-gray-500'}`}
+                    >
+                        <LuHeading4/>
+                    </button>
+                    <button
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
+                        className={`p-2 text-lg mx-1 hover:bg-[#4d99bc33] ${editor.isActive('heading', { level: 5 }) ? 'text-darkCyan bg-[#4d99bc33]' : 'text-gray-500'}`}
+                    >
+                        <LuHeading5/>
+                    </button>
+                    <button
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
+                        className={`p-2 text-lg mx-1 hover:bg-[#4d99bc33] ${editor.isActive('heading', { level: 6 }) ? 'text-darkCyan bg-[#4d99bc33]' : 'text-gray-500'}`}
+                    >
+                        <LuHeading6/>
+                    </button>
+                    <button
                         onClick={() => editor.chain().focus().toggleBulletList().run()}
                         className={`p-2 text-lg mx-1 hover:bg-[#4d99bc33] ${editor.isActive('bulletList') ? 'text-darkCyan bg-[#4d99bc33]' : 'text-gray-500'}`}
                     >
@@ -252,12 +333,12 @@ function Tiptap() {
                     </button>
                 </div>
         </div>
-            <div className="rounded-b-md border-[1px] border-gray-300 mt-5">
+            <div className="mt-5">
                 <EditorContent editor={editor} className='prose w-full max-h-[19rem] overflow-y-auto p-2'/>
             </div>
             <div className='flex flex-row items-center justify-end gap-5 w-full'>
                 <button
-                    onClick={() => console.log(editor.getHTML())}
+                    onClick={handlePreview}
                     className="flex items-center gap-2 mt-4 px-4 py-2 rounded-sm border-[1px] border-gray-400 text-gray-500"
                 >
                     <span>

@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
                 )
             },
             {
-                path:'blog/preview',
+                path:'blog/preview/:id',
                 element:(
                     <ProtectedRoute>
                         <BlogPreview/>

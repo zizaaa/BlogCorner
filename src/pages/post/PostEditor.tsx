@@ -1,4 +1,3 @@
-import React, { useRef, useState } from 'react';
 import Tiptap from './Tiptap';
 
 function PostEditor() {

@@ -11,7 +11,7 @@ export default {
         nunito: ['"Nunito"', 'sans-serif'],
       },
       colors:{
-        "white":"#FEFFFE",
+        "white":"#f3f1f1",
         "semiWhite":"#fefefe",
         "grayishWhite":"#E5E7E9",
         "darkishGray":"#444444",

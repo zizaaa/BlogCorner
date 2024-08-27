@@ -51,7 +51,27 @@ input[type="number"] {
 }
 
 .prose h1 {
-    @apply text-[2.5rem] font-bold;
+    @apply text-4xl font-bold; /* Equivalent to 2.5rem for h1 */
+}
+
+.prose h2 {
+    @apply text-3xl font-bold; /* Slightly smaller than h1 */
+}
+
+.prose h3 {
+    @apply text-2xl font-semibold; /* Medium size with semi-bold weight */
+}
+
+.prose h4 {
+    @apply text-xl font-semibold; /* Smaller than h3, same weight */
+}
+
+.prose h5 {
+    @apply text-lg font-medium; /* Smaller than h4, medium weight */
+}
+
+.prose h6 {
+    @apply text-base font-medium; /* Smallest heading, medium weight */
 }
 
 .prose pre {
@@ -62,10 +82,20 @@ input[type="number"] {
     @apply border-l-4 border-gray-500 pl-4 italic text-gray-600;
 }
 
+.prose p{
+    margin: 10px 0;
+}
+
 .ProseMirror:focus {
     outline: none;
 }
 
 .tiptap{
     min-height: 18rem;
+    background-color: #FFFF;
+    border: 1px;
+    border-style: solid;
+    border-color: rgb(224, 224, 224);
+    border-radius: 5px;
+    padding: 10px;
 }

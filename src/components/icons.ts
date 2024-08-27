@@ -7,6 +7,7 @@ import { RiCodeBlock } from "react-icons/ri";
 import { TbBlockquote } from "react-icons/tb";
 import { VscHorizontalRule } from "react-icons/vsc";
 import { IoEyeSharp,IoSend } from "react-icons/io5";
+import { LuHeading2,LuHeading3,LuHeading4,LuHeading5,LuHeading6 } from "react-icons/lu";
 
 export {
     FaHome,
@@ -43,5 +44,10 @@ export {
     FaRedo,
     IoEyeSharp,
     IoSend,
-    FaTrashAlt 
+    FaTrashAlt,
+    LuHeading2,
+    LuHeading3,
+    LuHeading4,
+    LuHeading5,
+    LuHeading6
 }

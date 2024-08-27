@@ -1,11 +1,7 @@
 import {
-    FaInstagram,
     FaTwitter,
-    FaFacebook,
     FaSquareThreads, 
     FaLink,
-    FaBookmark,
-    FaRegBookmark
 } from '../../components/icons'
 import { BlogLayout } from '../../components/links'
 
