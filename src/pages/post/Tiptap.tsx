@@ -1,6 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaAlignCenter, FaAlignLeft, FaAlignRight, FaBold, FaCode, FaHeading, FaItalic, FaParagraph, FaRedo, FaStrikethrough, FaTrashAlt, FaUnderline, FaUndo, GoListOrdered, IoEyeSharp, IoSend, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, MdFormatListBulleted, TbBlockquote, VscHorizontalRule } from '../../components/icons'
 import { useEditor, EditorContent } from '@tiptap/react';
+import { BlogData, PreviewData } from '../../types/Data';
+import { cookieStore, errorToast, generateTimestamp, serverURL, Spinner, successToast } from '../../components/links';
+import { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { TiptapProps } from '../../types/Props';
+
 import StarterKit from '@tiptap/starter-kit';
 import Heading from '@tiptap/extension-heading';
 import BulletList from '@tiptap/extension-bullet-list';
@@ -10,10 +16,8 @@ import Blockquote from '@tiptap/extension-blockquote';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
-import { BlogData, PreviewData } from '../../types/Data';
-import { errorToast, generateTimestamp } from '../../components/links';
-import { Toaster } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
 const extensions = [
     StarterKit,
@@ -29,17 +33,17 @@ const extensions = [
     }),
 ];
 
-function Tiptap() {
-    const editor = useEditor({
-        extensions,
-        content: '',
-    });
-
+const Tiptap:React.FC<TiptapProps> = (props) => {
+    const { token } = cookieStore();
     const coverRef = useRef<HTMLInputElement | null>(null);
     const [coverSrc, setCoverSrc] = useState<string>('');
     const [title, setTitle] = useState<string>('')
     const [isCoverChange, setCoverChange] = useState<boolean>(false);
     const [isCoverLoading, setLoading] = useState<boolean>(false);
+
+    const editor = useEditor({
+        extensions,
+    });
 
     const navigate = useNavigate();
     
@@ -47,6 +51,34 @@ function Tiptap() {
         return null;
     }
 
+    const mutation = useMutation({
+        mutationFn: async (formData: FormData): Promise<void> => {
+            try {
+                const {data} = await axios.post(`${serverURL}/api/blogs/post/blog`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization:`Bearer ${token}`
+                    }
+                });
+                
+                //remove values
+                handleCancelCoverChange()
+                setTitle('');
+                editor.commands.setContent("");
+
+                //toast
+                successToast(`${data.message}`);
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    errorToast(error.response?.data.message);
+                } else {
+                    errorToast('Something went wrong.');
+                }
+            }
+        }
+    });
+
+    //file upload
     const handleFileUpload = (fileRef: React.RefObject<HTMLInputElement>, setSrc:React.Dispatch<React.SetStateAction<string>>): void=>{
         const file = fileRef.current?.files?.[0];
 
@@ -64,11 +96,13 @@ function Tiptap() {
             }
     }
 
+    //add cover image
     const handleCoverChange = () =>{
         setLoading(true);
         handleFileUpload(coverRef, setCoverSrc);
     }
 
+    // delete cover
     const handleCancelCoverChange = () =>{
         if(coverRef.current) {
             coverRef.current.value = ''; // Reset the input value
@@ -77,6 +111,7 @@ function Tiptap() {
         setCoverChange(false);
     }
 
+    // validate blog
     const isValidBlog = (blog:BlogData | PreviewData)=>{
 
         if(!blog.cover){
@@ -86,6 +121,11 @@ function Tiptap() {
 
         if(!blog.title){
             errorToast('Please add your blog title!');
+            return false
+        }
+
+        if(blog.title.length >= 100){
+            errorToast('Your title is too long!');
             return false
         }
 
@@ -99,6 +139,7 @@ function Tiptap() {
 
     const handleSubmit = () => {
         const editorContent = editor.getHTML(); 
+        
 
         const blog:BlogData = {
             cover: coverRef.current?.files ? coverRef.current.files[0] : null,
@@ -106,7 +147,19 @@ function Tiptap() {
             content:editorContent
         }
 
-        console.log(blog)
+        if (!isValidBlog(blog)) {
+            return;
+        }
+        
+        // send to db
+        const formData = new FormData();
+        if (blog.cover && blog.title && blog.content) {
+            formData.append('title', blog.title);
+            formData.append('cover', blog.cover);
+            formData.append('content', blog.content);
+
+            mutation.mutate(formData)
+        }
     };
 
     const handlePreview = () => {
@@ -123,18 +176,30 @@ function Tiptap() {
             return;
         }
     
-        // Generate a unique ID based on the current time
-        const id = new Date().getTime();
-    
         // Convert the blog object to a JSON string
         const blogJson = JSON.stringify(blog);
     
         // Save to session storage
-        sessionStorage.setItem(`${id}`, blogJson);
+        sessionStorage.setItem(`${props.id}`, blogJson);
         
         //navigate
-        navigate(`/blog/preview/${id}`);
-    };    
+        navigate(`/blog/preview/${props.id}`);
+    };  
+    
+    useEffect(()=>{
+        if(props.data && editor && props.data.cover){
+            //set cover change to true
+            setCoverChange(true);
+            // set cover
+            setCoverSrc(props.data.cover);
+            //set title
+            setTitle(props.data.title);
+            //set content
+            editor.commands.setContent(props.data.content);
+        }else{
+            editor.commands.setContent('');
+        }
+    },[props.id,props.loading,props.data])
 
     return (
         <div className="m-8">
@@ -144,7 +209,7 @@ function Tiptap() {
                     {
                         isCoverChange ?
                         (
-                            isCoverLoading ?
+                            isCoverLoading || props.loading ?
                             (
                                 <div role="status" className="animate-pulse">
                                     <div className="flex items-center justify-center w-full h-56 bg-gray-300 rounded">
@@ -185,6 +250,7 @@ function Tiptap() {
                                 className="hidden" 
                                 onChange={handleCoverChange}
                                 ref={coverRef}
+                                accept="image/png, image/jpeg"
                             />
                         </label>
                     </div> 
@@ -348,12 +414,22 @@ function Tiptap() {
                 </button>
                 <button
                     onClick={handleSubmit}
-                    className="flex items-center gap-2 mt-4 px-4 py-2 bg-green-500 text-white rounded-sm"
+                    className={`flex items-center justify-center gap-2 mt-4 w-28 py-2 bg-green-500 text-white rounded-sm ${mutation.isPending ? 'cursor-not-allowed':'cursor-pointer'}`}
+                    disabled={mutation.isPending}
                 >
-                    <span>
-                        <IoSend/>
-                    </span>
-                    Publish
+                    {
+                        mutation.isPending ?
+                        (
+                            Spinner({textColor:'#FFFFFF',fillColor:'#000000'})
+                        ):(
+                            <>
+                                <span>
+                                    <IoSend/>
+                                </span>
+                                Publish
+                            </>
+                        )
+                    }
                 </button>
             </div>
         </div>

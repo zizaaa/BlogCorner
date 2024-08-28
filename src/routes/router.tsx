@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
                 )
             },
             {
-                path:'post/editor',
+                path:'post/editor/:id',
                 element:(
                     <ProtectedRoute>
                         <PostEditor/>
@@ -60,7 +60,11 @@ export const router = createBrowserRouter([
     },
     {
         path:'/form',
-        element:(<LogedIn><FormLayout/></LogedIn>),
+        element:(
+            <LogedIn>
+                <FormLayout/>
+            </LogedIn>
+        ),
         children:[
             {
                 path:'login',

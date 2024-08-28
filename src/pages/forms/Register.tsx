@@ -165,7 +165,11 @@ function Register() {
                     />
                 </div>
             </div>
-            <button type="submit" className="text-white bg-darkCyan focus:ring-4 focus:outline-none focus:ring-darkCyan font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">
+            <button 
+                type="submit" 
+                className={`text-white bg-darkCyan focus:ring-4 focus:outline-none focus:ring-darkCyan font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center ${mutation.isPending ? 'cursor-not-allowed':'cursor-pointer'}`}
+                disabled = {mutation.isPending}
+            >
                 {
                     mutation.isPending ?
                     (

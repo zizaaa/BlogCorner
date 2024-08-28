@@ -1,4 +1,4 @@
-import { FaHome,FaBookmark,FaMoon,FaSun,FaRegBookmark,FaInstagram,FaTwitter,FaFacebook,FaCode,FaBold,FaItalic,FaStrikethrough,FaParagraph,FaHeading,FaAlignLeft, FaAlignCenter, FaAlignRight,FaUndo,FaRedo,FaTrashAlt } from "react-icons/fa";
+import { FaHome,FaBookmark,FaMoon,FaSun,FaRegBookmark,FaInstagram,FaTwitter,FaFacebook,FaCode,FaBold,FaItalic,FaStrikethrough,FaParagraph,FaHeading,FaAlignLeft, FaAlignCenter, FaAlignRight,FaUndo,FaRedo,FaTrashAlt,FaRegEdit } from "react-icons/fa";
 import { ImExit } from "react-icons/im";
 import { FaArrowDownLong,FaArrowUpLong,FaLink,FaPlus,FaArrowLeft,FaSquareThreads,FaUnderline } from "react-icons/fa6";
 import { MdFormatListBulleted } from "react-icons/md";
@@ -49,5 +49,6 @@ export {
     LuHeading3,
     LuHeading4,
     LuHeading5,
-    LuHeading6
+    LuHeading6,
+    FaRegEdit 
 }

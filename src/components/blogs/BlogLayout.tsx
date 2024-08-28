@@ -1,12 +1,17 @@
 import React from 'react';
 import parse from 'html-react-parser';
-import { FaRegBookmark } from '../../components/icons';
+import { FaRegBookmark, FaRegEdit } from '../../components/icons';
 import { BlogLayoutProps } from '../../types/Props';
 import { convertTimestamp } from '../links';
+import { useNavigate } from 'react-router-dom';
 
-const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview }) => {
+const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) => {
     const content = data ? parse(data.content) : null;
+    const navigate = useNavigate();
 
+    const handleNavigate = () =>{
+        navigate(`/post/editor/${id}`);
+    }
     return (
         <div className="p-5">
             <div className='flex flex-row items-center justify-between'>
@@ -25,6 +30,16 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview }) => {
                         <FaRegBookmark />
                     </button>
                 )}
+                {
+                    preview && !loading &&(
+                        <button onClick={handleNavigate} className='flex flex-row items-center justify-center gap-2 rounded-sm p-2 text-gray-400 hover:text-darkCyan'>
+                            <span>
+                                <FaRegEdit/>
+                            </span>
+                            Edit
+                        </button>
+                    )
+                }
             </div>
             <div className="my-5">
                 {loading ? (

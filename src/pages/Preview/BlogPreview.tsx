@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BlogLayout } from '../../components/links'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { PreviewData } from '../../types/Data';
 
 function BlogPreview() {
@@ -8,8 +8,13 @@ function BlogPreview() {
 
     const [data, setData] = useState<PreviewData | null>(null);
     const [loading, setLoading] = useState<boolean>(false)
+    
+    const navigate = useNavigate();
 
     useEffect(() => {
+        if(!id){
+            return navigate('/');
+        }
         const savedData = sessionStorage.getItem(`${id}`);
 
         if (savedData) {
@@ -29,6 +34,7 @@ function BlogPreview() {
                 data = {data}
                 loading = {loading}
                 preview = {true}
+                id = {id}
             />
         </section>
     )

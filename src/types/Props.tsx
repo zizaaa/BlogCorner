@@ -30,4 +30,11 @@ export interface BlogLayoutProps{
     data?:PreviewData | null;
     loading:boolean;
     preview:boolean;
+    id?: string;
+}
+
+export interface TiptapProps {
+    data?:PreviewData | null;
+    loading:boolean;
+    id?: string;
 }
