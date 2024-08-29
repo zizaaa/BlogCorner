@@ -36,7 +36,11 @@ Clone down this repository. You will need `node.js` and `git` installed globally
  ```sh
    npm install
 ```
-2. After, you can run:
+2. Build the project to prepare it for development:
+ ```sh
+   npm build
+```
+3. After, you can run:
  ```sh
    npm run dev
 ```
