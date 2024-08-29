@@ -10,3 +10,15 @@ export interface PreviewData {
     content:string;
     timestamp:string;
 }
+
+export interface Blog {
+    id:number;
+    cover_img:string;
+    title:string;
+    content:string;
+    created_at:string;
+    down_vote:number;
+    up_vote:number;
+    owner:number;
+
+}

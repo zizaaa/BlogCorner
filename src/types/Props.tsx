@@ -1,4 +1,4 @@
-import { PreviewData } from "./Data";
+import { Blog, PreviewData } from "./Data";
 
 export interface ProtectedRouteProps{
     isAuthorized:boolean;
@@ -37,4 +37,8 @@ export interface TiptapProps {
     data?:PreviewData | null;
     loading:boolean;
     id?: string;
+}
+
+export interface BlogCardProps{
+    blog:Blog;
 }

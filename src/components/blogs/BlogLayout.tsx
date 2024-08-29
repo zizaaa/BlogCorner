@@ -2,13 +2,13 @@ import React from 'react';
 import parse from 'html-react-parser';
 import { FaRegBookmark, FaRegEdit } from '../../components/icons';
 import { BlogLayoutProps } from '../../types/Props';
-import { convertTimestamp } from '../links';
+import { convertTimestamp, serverURL } from '../links';
 import { useNavigate } from 'react-router-dom';
 
 const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) => {
     const content = data ? parse(data.content) : null;
     const navigate = useNavigate();
-
+    console.log(data)
     const handleNavigate = () =>{
         navigate(`/post/editor/${id}`);
     }
@@ -65,8 +65,9 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) =
                     </div>
                 ) : (
                     <div className="drop-shadow-md h-[30rem]">
+                        {/* data?.cover || `${serverURL}/${data?.cover}` */}
                         <img 
-                            src={data?.cover || "https://www.twintel.net/wp-content/uploads/2023/10/10-25-23.jpg"}
+                            src={`${preview ? data?.cover:`${serverURL}/${data?.cover}`}`}
                             className="object-fit w-full h-full rounded-md drop-shadow-md"
                             loading="lazy"
                             alt={data?.title || 'Blog cover image'}

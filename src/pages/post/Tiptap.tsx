@@ -70,7 +70,11 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
                 successToast(`${data.message}`);
             } catch (error) {
                 if (axios.isAxiosError(error)) {
-                    errorToast(error.response?.data.message);
+                    if(error.response?.data === 'Unauthorized'){
+                        errorToast("Please log in");
+                    }else{
+                        errorToast(error.response?.data.message);
+                    }
                 } else {
                     errorToast('Something went wrong.');
                 }

@@ -1,15 +1,49 @@
+import { useNavigate, useParams } from 'react-router-dom'
 import {
     FaTwitter,
     FaSquareThreads, 
     FaLink,
 } from '../../components/icons'
-import { BlogLayout } from '../../components/links'
+import { BlogLayout, serverURL } from '../../components/links'
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 function ViewBlog() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+
+    const { data,isLoading } = useQuery({
+        queryKey:['singleBlog'],
+        queryFn: async()=>{
+            try {
+                const { data } = await axios.get(`${serverURL}/api/blogs/get/single/blog/${id}`)
+                console.log(data)
+                return data
+            } catch (error) {
+                navigate('/')
+                return;
+            }
+        }
+    })
+
+    if (isLoading || !data) {
+        return null; // Return null while loading or navigating
+    }
+    
+    const newData = {
+        cover: data.cover_img,
+        title:data.title,
+        content:data.content,
+        timestamp:data.created_at
+    }
     return (
         <section className="flex">
             <article className='flex-1 p-5'>
-                <BlogLayout/>
+                <BlogLayout
+                    data = {newData}
+                    loading = {isLoading}
+                    preview = {false}
+                />
             </article>
             <aside className="w-80 p-5">
                 <div className='border-[1px] border-gray-200 rounded-md p-5 mb-5 dark:border-gray-600'>
