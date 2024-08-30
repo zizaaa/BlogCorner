@@ -1,9 +1,9 @@
 import React from "react";
 import parse from 'html-react-parser';
 import { useNavigate } from "react-router-dom";
-import { FaArrowDownLong, FaArrowUpLong, FaLink, FaRegBookmark } from "../icons";
+import { FaArrowDownLong, FaArrowUpLong, FaBookmark, FaRegBookmark } from "../icons";
 import { BlogCardProps } from "../../types/Props";
-import { cookieStore, errorToast, serverURL,successToast,timeAgo } from "../links";
+import { bookMarked, cookieStore, errorToast, serverURL,timeAgo, useBookmark, voteCountQuery, votedQuery } from "../links";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -14,7 +14,21 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
     if (!blog) {
         return null;
     }
+
+    const { 
+            data: voteCount, 
+            isLoading: isVoteCountLoading, 
+            refetch:refetchVoteCount 
+        } = voteCountQuery(blog.id)
     
+    const { 
+            data:isVoted, 
+            isError:isVotedError, 
+            refetch:refetchIsVoted 
+        } = votedQuery(blog.id)
+
+    const { data:isBookMarked, refetch:refetchBookMarked, isError } = bookMarked(blog.id);
+
     const upVote = useMutation({
         mutationFn: async(): Promise<void>=>{
             try {
@@ -38,6 +52,10 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
                     return
                 }
             }
+        },
+        onSuccess:()=>{
+            refetchVoteCount();
+            refetchIsVoted();
         }
     })
     const downVote = useMutation({
@@ -63,8 +81,22 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
                     return
                 }
             }
+        },
+        onSuccess:()=>{
+            refetchVoteCount();
+            refetchIsVoted();
         }
     })
+
+    const bookMark = useBookmark();
+
+    const handleBookMark = () =>{
+        bookMark.mutate(blog.id,{
+            onSuccess:()=>{
+                refetchBookMarked();
+            }
+        })
+    }
 
     // Extract text content from parsed HTML and truncate
     const getTextContent = (element: React.ReactNode): string => {
@@ -122,28 +154,64 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
             </div>
             <div className="flex flex-row p-2 gap-5 text-darkishGray mt-5 cursor-default">
                 <div className="flex items-center gap-2">
-                    <button onClick={()=>{upVote.mutate()}} className="p-2 rounded-full text-xl transition-all duration-200 text-white bg-darkCyan hover:text-white hover:bg-darkCyan hover:drop-shadow-lg">
+                    <button 
+                        onClick={()=>{upVote.mutate()}} 
+                        className={`p-2 rounded-full text-xl ${isVotedError ? '':isVoted?.upvoted ? 'text-white bg-darkCyan hover:drop-shadow-lg':'text-darkishGray hover:text-white hover:bg-darkCyan'} transition-all duration-200`}
+                    >
                         <FaArrowUpLong />
                     </button>
-                    <span className="text-sm dark:text-grayishWhite">1.2k</span>
+                    <span className="text-sm text-darkishGray">
+                        {
+                            !isVoteCountLoading && voteCount ?
+                            (
+                                voteCount.upVotes
+                            ):(
+                                '0'
+                            )
+                        }
+                    </span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button onClick={()=>{downVote.mutate()}} className="p-2 rounded-full text-xl transition-all duration-200 dark:text-grayishWhite hover:text-white hover:bg-darkCyan hover:drop-shadow-lg">
+                    <button 
+                        onClick={()=>{downVote.mutate()}} 
+                        className={`p-2 rounded-full text-xl ${isVotedError ? '':isVoted?.downvoted ? 'text-white bg-darkCyan hover:drop-shadow-lg':'text-darkishGray hover:text-white hover:bg-darkCyan'} transition-all duration-200`}
+                    >
                         <FaArrowDownLong />
                     </button>
-                    <span className="text-sm dark:text-grayishWhite">1.2k</span>
+                    <span className="text-sm text-darkishGray">
+                        {
+                            !isVoteCountLoading && voteCount ?
+                            (
+                                voteCount.downVotes
+                            ):(
+                                '0'
+                            )
+                        }
+                    </span>
                 </div>
-                <div className="flex items-center cursor-pointer">
-                    <button className="p-2 text-xl dark:text-grayishWhite">
-                        <FaLink />
+                <div>
+                    <button onClick={handleBookMark} className="group p-2 text-xl flex items-center gap-2 text-darkishGray">
+                        {
+                            isError ?
+                            (
+                                <FaRegBookmark />
+                            ):(
+                                isBookMarked?.saved ?
+                                (
+                                    <span className="text-darkCyan">
+                                        <FaBookmark/>
+                                    </span>
+                                ):(
+                                    <span className="group-hover:text-darkCyan">
+                                        <FaRegBookmark />
+                                    </span>
+                                )
+                            )
+                        }
+                        <p className="text-sm text-darkishGray">
+                            Bookmark
+                        </p>
                     </button>
-                    <p className="text-sm dark:text-grayishWhite">Link</p>
-                </div>
-                <div className="flex items-center cursor-pointer">
-                    <button className="p-2 text-xl dark:text-grayishWhite">
-                        <FaRegBookmark />
-                    </button>
-                    <p className="text-sm dark:text-grayishWhite">Bookmark</p>
                 </div>
             </div>
         </section>

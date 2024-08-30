@@ -42,3 +42,25 @@ export interface TiptapProps {
 export interface BlogCardProps{
     blog:Blog;
 }
+
+export interface ShareButtonProps{
+    id?:string;
+}
+
+export interface SocialButtonsProps{
+    url:string;
+}
+
+export interface SavedDataProps{
+    content:string;
+    created_at:string;
+    id:number;
+    title:string;
+    cover_img:string;
+}
+
+export interface BookMarkProps{
+    data:SavedDataProps
+    refetch:()=>void;
+}
+

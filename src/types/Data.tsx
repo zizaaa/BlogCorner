@@ -22,3 +22,9 @@ export interface Blog {
     owner:number;
 
 }
+
+export interface PopularBlogData {
+    id:number;
+    title:string;
+    created_at:string;
+}

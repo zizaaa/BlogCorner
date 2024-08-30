@@ -3,6 +3,7 @@ import { BlogCard, cookieStore, LoadingBlogCard, serverURL } from "../../compone
 import axios from "axios";
 import { Blog } from "../../types/Data";
 import { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
 
 function Home() {
     const { getToken } = cookieStore();
@@ -20,8 +21,6 @@ function Home() {
                 params: { page: pageParam, limit: 100 },
             });
 
-            //get token
-            getToken();
             return data;
         },
         getNextPageParam: (lastPage, allPages) => {
@@ -35,6 +34,13 @@ function Home() {
         initialPageParam: 1, // Start with page 1
     });
 
+    useEffect(()=>{
+        const handleGetCookie = () =>{
+            //get cookie
+            getToken();
+        }
+        handleGetCookie();
+    },[])
     return (
         <section className="p-2 w-full flex flex-col gap-2">
             <Toaster/>

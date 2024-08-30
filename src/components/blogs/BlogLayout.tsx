@@ -1,16 +1,30 @@
 import React from 'react';
 import parse from 'html-react-parser';
-import { FaRegBookmark, FaRegEdit } from '../../components/icons';
+import { FaBookmark, FaRegBookmark, FaRegEdit } from '../../components/icons';
 import { BlogLayoutProps } from '../../types/Props';
-import { convertTimestamp, serverURL } from '../links';
+import { bookMarked, convertTimestamp, serverURL, useBookmark } from '../links';
 import { useNavigate } from 'react-router-dom';
 
 const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) => {
     const content = data ? parse(data.content) : null;
     const navigate = useNavigate();
-    console.log(data)
+
+    const blogId = Number(id);
+
+    const { data:isBookMarked, refetch:refetchBookMarked, isError } = bookMarked(blogId);
+
     const handleNavigate = () =>{
         navigate(`/post/editor/${id}`);
+    }
+
+    const bookMark = useBookmark();
+
+    const handleBookMark = () =>{
+        bookMark.mutate(blogId,{
+            onSuccess:()=>{
+                refetchBookMarked();
+            }
+        })
     }
     return (
         <div className="p-5">
@@ -26,8 +40,27 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) =
                     </h1>
                 )}
                 {!preview && !loading && (
-                    <button className='text-gray-400 text-xl'>
-                        <FaRegBookmark />
+                    <button onClick={handleBookMark} className="group p-2 text-xl flex items-center gap-2 text-darkishGray">
+                        {
+                            isError ?
+                            (
+                                <FaRegBookmark />
+                            ):(
+                                isBookMarked?.saved ?
+                                (
+                                    <span className="text-darkCyan">
+                                        <FaBookmark/>
+                                    </span>
+                                ):(
+                                    <span className="group-hover:text-darkCyan">
+                                        <FaRegBookmark />
+                                    </span>
+                                )
+                            )
+                        }
+                        <p className="text-sm text-darkishGray">
+                            Bookmark
+                        </p>
                     </button>
                 )}
                 {
