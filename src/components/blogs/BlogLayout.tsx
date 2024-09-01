@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import parse from 'html-react-parser';
 import { FaBookmark, FaRegBookmark, FaRegEdit } from '../../components/icons';
 import { BlogLayoutProps } from '../../types/Props';
-import { bookMarked, convertTimestamp, serverURL, useBookmark } from '../links';
-import { useNavigate } from 'react-router-dom';
+import { bookMarked, convertTimestamp, fetchSingleUser, serverURL, useBookmark } from '../links';
+import { Link, useNavigate } from 'react-router-dom';
 
 const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) => {
     const content = data ? parse(data.content) : null;
@@ -12,6 +12,8 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) =
     const blogId = Number(id);
 
     const { data:isBookMarked, refetch:refetchBookMarked, isError } = bookMarked(blogId);
+
+    const { data:owner, refetch:refetchOwnerData } = fetchSingleUser(data ? data.owner:null)
 
     const handleNavigate = () =>{
         navigate(`/post/editor/${id}`);
@@ -26,6 +28,10 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) =
             }
         })
     }
+
+    useEffect(()=>{
+        refetchOwnerData()
+    },[data])
     return (
         <div className="p-5">
             <div className='flex flex-row justify-between max-[500px]:flex-col'>
@@ -35,9 +41,12 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) =
                         <span className="sr-only">Loading...</span>
                     </div>
                 ) : (
-                    <h1 className="text-3xl font-bold dark:text-white">
-                        {data?.title || 'Sample title here'}
-                    </h1>
+                    <div>
+                        <h1 className="text-3xl font-bold dark:text-white">
+                            {data?.title || 'title here'}
+                        </h1>
+                        <Link to='' className='text-sm text-gray-500 hover:underline'>{owner?.username}</Link>
+                    </div>
                 )}
                 {!preview && !loading && (
                     <button onClick={handleBookMark} className="group p-2 text-xl flex items-center gap-2 text-darkishGray">

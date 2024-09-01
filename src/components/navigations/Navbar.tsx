@@ -1,12 +1,33 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { IoMenu, RxCross2 } from '../icons'
 import { propsType } from '../../types/Props'
+import React, { useEffect, useRef, useState } from 'react'
+import { serverURL } from '../links'
 
 const Navbar:React.FC<propsType> =(props) => {
+    const navigate = useNavigate()
+    const [showDropDown, setShowDropDown] = useState<boolean>(false);
+    const dropdownRef = useRef<HTMLInputElement>(null);
 
     const toggleSideNav = () => {
         props.setShowSideNav(!props.showSideNav);
     };
+
+    useEffect(() => {
+        const handleClickOutside = (event:MouseEvent |React.MouseEvent<Document,MouseEvent>) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setShowDropDown(false);
+            }
+        };
+
+        // Attach the event listener
+        document.addEventListener("mousedown", handleClickOutside);
+
+        // Cleanup the event listener on component unmount
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [dropdownRef]);
 
     return (
         <nav className="bg-white border-gray-200 dark:bg-black fixed left-0 right-0">
@@ -17,20 +38,42 @@ const Navbar:React.FC<propsType> =(props) => {
                 </Link>
                 <div className="w-auto flex flex-row gap-4" id="navbar-default">
                     <div className='flex items-center justify-center'>
-                        <button data-popover-target="popover-click" data-popover-trigger="click" type="button" className='w-10 h-10 rounded-full cursor-pointer'>
-                            <img 
-                                src="https://www.shutterstock.com/image-photo/portrait-woman-symbolically-turning-into-600nw-2374079997.jpg"
-                                className='h-full w-full object-cover rounded-full'
-                            />
-                        </button>
-                            <div data-popover id="popover-click" role="tooltip" className="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-                                <div className="px-3 py-2">
-                                    <Link to='' className='text-lg'>
-                                        Profile
-                                    </Link>
+                        {
+                            props.data ?
+                            (
+                                <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative" ref={dropdownRef}>
+                                    <button onClick={()=>{setShowDropDown(!showDropDown)}} type="button" className="flex text-sm rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
+                                        <span className="sr-only">Open user menu</span>
+                                        <img className="w-8 h-8 rounded-full object-cover" src={props.data && props.data.avatar ? `${serverURL}/${props.data.avatar}`:"/avatar.png"} alt="user photo" loading='lazy'/>
+                                    </button>
+                                    <div className={`z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 absolute -bottom-44 right-0 ${showDropDown ? "":"hidden"}`}>
+                                        <div className="px-4 py-3">
+                                            <span className="block text-sm text-gray-900 dark:text-white">
+                                                {props.data && (props.data.name)}
+                                            </span>
+                                            <span className="block text-sm  text-gray-500 truncate dark:text-gray-400">
+                                                {props.data && (props.data.email)}
+                                            </span>
+                                        </div>
+                                        <ul className="py-2">
+                                        <li>
+                                            <Link to={`/profile`} onClick={()=>{setShowDropDown(!showDropDown)}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Profile</Link>
+                                        </li>
+                                        <li>
+                                            <button onClick={props.handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</button>
+                                        </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <div data-popper-arrow></div>
-                            </div>
+                            ):(
+                                <button onClick={()=>{navigate('/form/login')}}>
+                                    <img 
+                                        src="/avatar.png"
+                                        className='w-8 h-8 rounded-full object-cover'
+                                    />
+                                </button>
+                            )
+                        }
                     </div>
                     <div onClick={toggleSideNav} className={`max-[900px]:flex items-center justify-center hidden ${!props.showSideNav ? '':'rotate-180'} transition-all duration-300`}>
                         <button className='text-3xl'>

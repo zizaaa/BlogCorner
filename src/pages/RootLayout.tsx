@@ -1,8 +1,9 @@
 import { Outlet } from "react-router-dom"
-import { fetchUser, Navbar, SideNav } from "../components/links"
+import { cookieStore, fetchUser, Navbar, SideNav } from "../components/links"
 import { useEffect, useState } from "react"
 
 function RootLayout() {
+    const { deleteCookie } = cookieStore();
     const [isDarkMode, setDarkMode] = useState<boolean>(false);
     const [showSideNav, setShowSideNav] = useState<boolean>(false);
 
@@ -15,6 +16,11 @@ function RootLayout() {
     //     setDarkMode(newIsDark);
     //     localStorage.setItem('isDark', JSON.stringify(newIsDark));
     // }
+
+    const handleLogout = (): void =>{
+        deleteCookie();
+        location.reload();
+    }
 
     useEffect(()=>{
         const storedDarkMode: string | null = localStorage.getItem('isDark');
@@ -31,6 +37,7 @@ function RootLayout() {
                     data={data}
                     setShowSideNav={setShowSideNav}
                     showSideNav={showSideNav}
+                    handleLogout={handleLogout}
                 />
                 <section className="max-w-screen-xl mx-auto p-4 flex flex-row h-screen pt-20 overflow-hidden bg-white dark:bg-black">
                     <SideNav
@@ -39,6 +46,7 @@ function RootLayout() {
                         data={data}
                         setShowSideNav={setShowSideNav}
                         showSideNav={showSideNav}
+                        handleLogout={handleLogout}
                     />
                     <div className="overflow-y-auto w-full">
                         <Outlet/>

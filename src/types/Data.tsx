@@ -9,6 +9,7 @@ export interface PreviewData {
     title:string;
     content:string;
     timestamp:string;
+    owner:number;
 }
 
 export interface Blog {
@@ -27,4 +28,12 @@ export interface PopularBlogData {
     id:number;
     title:string;
     created_at:string;
+}
+
+export interface LogedInUser{
+    name:string;
+    id:number;
+    username:string;
+    avatar?:string;
+    email:string;
 }

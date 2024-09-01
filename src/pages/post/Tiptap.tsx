@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FaAlignCenter, FaAlignLeft, FaAlignRight, FaBold, FaCode, FaHeading, FaItalic, FaParagraph, FaRedo, FaStrikethrough, FaTrashAlt, FaUnderline, FaUndo, GoListOrdered, IoEyeSharp, IoSend, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, MdFormatListBulleted, TbBlockquote, VscHorizontalRule } from '../../components/icons'
 import { useEditor, EditorContent } from '@tiptap/react';
 import { BlogData, PreviewData } from '../../types/Data';
-import { cookieStore, errorToast, generateTimestamp, serverURL, Spinner, successToast } from '../../components/links';
+import { cookieStore, errorToast, fetchUser, generateTimestamp, serverURL, Spinner, successToast } from '../../components/links';
 import { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { TiptapProps } from '../../types/Props';
@@ -50,6 +50,8 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
     if (!editor) {
         return null;
     }
+
+    const { data:userData } = fetchUser();
 
     const mutation = useMutation({
         mutationFn: async (formData: FormData): Promise<void> => {
@@ -173,6 +175,7 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
             cover: coverSrc,
             title: title,
             content: editorContent,
+            owner:userData.id,
             timestamp:generateTimestamp()
         };
         

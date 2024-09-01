@@ -33,6 +33,12 @@ import ShareSocialButton from "./blogs/ShareSocialButton";
 import { useBookmark } from "../hooks/tanstack/useBookmark";
 import { bookMarked } from "../hooks/tanstack/bookMarked";
 import BookMarked from "./cards/BookMarked";
+import Profile from "../pages/profile/Profile";
+import NameModal from "./modals/NameModal";
+import Email from "./modals/Email";
+import Password from "./modals/Password";
+import fetchSingleUser from "../hooks/tanstack/fetchSingleUser";
+import ProfileComponent from "./cards/ProfileComponent";
 
 export {
     RootLayout,
@@ -69,5 +75,11 @@ export {
     ShareSocialButton,
     useBookmark,
     bookMarked,
-    BookMarked
+    BookMarked,
+    Profile,
+    NameModal,
+    Email,
+    Password,
+    fetchSingleUser,
+    ProfileComponent
 }

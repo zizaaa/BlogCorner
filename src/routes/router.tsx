@@ -12,7 +12,8 @@ import
         LogedIn,
         ForgotPassword,
         PostEditor,
-        BlogPreview
+        BlogPreview,
+        Profile
     } from '../components/links'
 
 export const router = createBrowserRouter([
@@ -53,6 +54,14 @@ export const router = createBrowserRouter([
                 element:(
                     <ProtectedRoute>
                         <BlogPreview/>
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path:'profile',
+                element:(
+                    <ProtectedRoute>
+                        <Profile/>
                     </ProtectedRoute>
                 )
             }

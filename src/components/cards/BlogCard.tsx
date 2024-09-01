@@ -121,7 +121,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
 
     return (
         <section
-            className="border-[1px] p-3 rounded-sm transition-all duration-100 hover:drop-shadow-md bg-semiWhite dark:bg-semiBlack dark:border-semiBlack"
+            className="border-[1px] p-3 rounded-sm transition-all duration-100 bg-semiWhite dark:bg-semiBlack dark:border-semiBlack"
         >
             <div className="flex flex-row justify-between max-[500px]:flex-col dark:text-grayishWhite">
                 <h1 className="text-2xl">

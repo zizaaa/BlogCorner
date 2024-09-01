@@ -1,6 +1,6 @@
 import { FaHome,FaBookmark,FaMoon,FaSun,FaRegBookmark,FaInstagram,FaTwitter,FaFacebook,FaCode,FaBold,FaItalic,FaStrikethrough,FaParagraph,FaHeading,FaAlignLeft, FaAlignCenter, FaAlignRight,FaUndo,FaRedo,FaTrashAlt,FaRegEdit } from "react-icons/fa";
 import { ImExit } from "react-icons/im";
-import { FaArrowDownLong,FaArrowUpLong,FaLink,FaPlus,FaArrowLeft,FaSquareThreads,FaUnderline } from "react-icons/fa6";
+import { FaArrowDownLong,FaArrowUpLong,FaLink,FaPlus,FaArrowLeft,FaSquareThreads,FaUnderline,FaCamera,FaCheck } from "react-icons/fa6";
 import { MdFormatListBulleted } from "react-icons/md";
 import { GoListOrdered } from "react-icons/go";
 import { RiCodeBlock } from "react-icons/ri";
@@ -53,5 +53,7 @@ export {
     LuHeading6,
     FaRegEdit,
     IoMenu,
-    RxCross2
+    RxCross2,
+    FaCamera,
+    FaCheck 
 }
