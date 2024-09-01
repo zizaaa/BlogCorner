@@ -42,7 +42,7 @@ function ViewBlog() {
         timestamp:data.created_at
     }
     return (
-        <section className="flex">
+        <section className="flex flex-row max-[900px]:flex-col">
             <article className='flex-1 p-5'>
                 <BlogLayout
                     data = {newData}
@@ -51,11 +51,13 @@ function ViewBlog() {
                     id = {id}
                 />
             </article>
-            <aside className="w-80 p-5">
+            <aside className="w-80 p-5 max-[900px]:w-full">
                 <ShareButtons
                     id={id}
                 />
-                <PopularBlogs/>
+                <div className='block max-[900px]:hidden'>
+                    <PopularBlogs/>
+                </div>
             </aside>
         </section>
     )

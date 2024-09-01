@@ -28,7 +28,7 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) =
     }
     return (
         <div className="p-5">
-            <div className='flex flex-row items-center justify-between'>
+            <div className='flex flex-row justify-between max-[500px]:flex-col'>
                 {loading ? (
                     <div role="status" className="animate-pulse">
                         <div className="h-8 bg-gray-200 rounded-full dark:bg-gray-700 w-96 mb-4"></div>
