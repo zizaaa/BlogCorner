@@ -18,6 +18,8 @@ export interface propsType{
     isError:boolean;
     data?:userData;
     isLoading:boolean;
+    setShowSideNav:React.Dispatch<React.SetStateAction<boolean>>;
+    showSideNav:boolean;
 }
 
 export interface ColorProps{

@@ -6,8 +6,9 @@ import { GoListOrdered } from "react-icons/go";
 import { RiCodeBlock } from "react-icons/ri";
 import { TbBlockquote } from "react-icons/tb";
 import { VscHorizontalRule } from "react-icons/vsc";
-import { IoEyeSharp,IoSend } from "react-icons/io5";
+import { IoEyeSharp,IoSend,IoMenu } from "react-icons/io5";
 import { LuHeading2,LuHeading3,LuHeading4,LuHeading5,LuHeading6 } from "react-icons/lu";
+import { RxCross2 } from "react-icons/rx";
 
 export {
     FaHome,
@@ -50,5 +51,7 @@ export {
     LuHeading4,
     LuHeading5,
     LuHeading6,
-    FaRegEdit 
+    FaRegEdit,
+    IoMenu,
+    RxCross2
 }

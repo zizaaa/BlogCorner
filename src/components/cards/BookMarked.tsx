@@ -43,12 +43,12 @@ const BookMarked:React.FC<BookMarkProps> = (props) => {
         <section
             className="border-[1px] p-3 rounded-sm transition-all duration-100 hover:drop-shadow-md bg-semiWhite dark:bg-semiBlack dark:border-semiBlack"
         >
-            <div className="flex flex-row justify-between dark:text-grayishWhite">
+            <div className="flex flex-row justify-between max-[500px]:flex-col dark:text-grayishWhite">
                 <h1 className="text-2xl">
                     {props.data.title}
                 </h1>
                 <div>
-                    <button onClick={handleUnSaved} className="group p-2 text-xl flex items-center gap-2 text-darkishGray">
+                    <button onClick={handleUnSaved} className="group p-2 text-xl flex items-center gap-2 text-darkishGray max-[500px]:my-3">
                         {
                             isError ?
                             (
@@ -72,8 +72,8 @@ const BookMarked:React.FC<BookMarkProps> = (props) => {
                     </button>
                 </div>
             </div>
-            <div className="flex flex-row w-full gap-4 mt-3">
-                <div className="w-28 h-28">
+            <div className="flex flex-row w-full gap-4 mt-3 max-[500px]:flex-col">
+                <div className="w-28 h-28 max-[500px]:w-full max-[500px]:h-40">
                     <img
                         src={`${serverURL}/${props.data.cover_img}`}
                         alt={props.data.title}
