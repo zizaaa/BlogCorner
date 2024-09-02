@@ -39,6 +39,7 @@ import Email from "./modals/Email";
 import Password from "./modals/Password";
 import fetchSingleUser from "../hooks/tanstack/fetchSingleUser";
 import ProfileComponent from "./cards/ProfileComponent";
+import PostedBlogs from "./blogs/PostedBlogs";
 
 export {
     RootLayout,
@@ -81,5 +82,6 @@ export {
     Email,
     Password,
     fetchSingleUser,
-    ProfileComponent
+    ProfileComponent,
+    PostedBlogs
 }

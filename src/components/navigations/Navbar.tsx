@@ -30,9 +30,9 @@ const Navbar:React.FC<propsType> =(props) => {
     }, [dropdownRef]);
 
     return (
-        <nav className="bg-white border-gray-200 dark:bg-black fixed left-0 right-0">
+        <nav className="bg-white border-gray-200 dark:bg-black fixed left-0 right-0 z-10">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+                <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse z-10">
                     <img src="/logo/logo_3-transparent.png" className="h-8" alt="Flowbite Logo" />
                     <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white  max-[300px]:hidden">BlogCorner</span>
                 </Link>
@@ -57,7 +57,7 @@ const Navbar:React.FC<propsType> =(props) => {
                                         </div>
                                         <ul className="py-2">
                                         <li>
-                                            <Link to={`/profile`} onClick={()=>{setShowDropDown(!showDropDown)}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Profile</Link>
+                                            <Link to={`/profile/${props.data.id}`} onClick={()=>{setShowDropDown(!showDropDown)}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Profile</Link>
                                         </li>
                                         <li>
                                             <button onClick={props.handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</button>
