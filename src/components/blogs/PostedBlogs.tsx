@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { cookieStore, errorToast, serverURL } from '../links';
 
 const PostedBlogs: React.FC<{ id: string }> = (props) => {
@@ -8,8 +8,8 @@ const PostedBlogs: React.FC<{ id: string }> = (props) => {
     const [limit, setLimit] = useState<number>(10); // Number of items per page
     const [page, setPage] = useState<number>(1); // Current page
 
-    const { data,isLoading } = useQuery({
-        queryKey: ['postedblogs', page, limit],
+    const { data,isLoading,refetch } = useQuery({
+        queryKey: ['postedblogs', page, limit, token],
         queryFn: async () => {
             try {
                 const { data } = await axios.get(`${serverURL}/api/blogs/get/all/posted?page=${page}&limit=${limit}&userId=${props.id}`, {
@@ -19,17 +19,18 @@ const PostedBlogs: React.FC<{ id: string }> = (props) => {
                 });
                 return data;
             } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    if (error.response?.data === 'Unauthorized') {
-                        errorToast("Please log in");
-                        return;
-                    } else {
-                        errorToast(error.response?.data.message);
-                        return;
-                    }
-                } else {
-                    errorToast('Something went wrong.');
-                }
+                console.error(error)
+                // if (axios.isAxiosError(error)) {
+                //     if (error.response?.data === 'Unauthorized') {
+                //         errorToast("Please log in");
+                //         return;
+                //     } else {
+                //         errorToast(error.response?.data.message);
+                //         return;
+                //     }
+                // } else {
+                //     errorToast('Something went wrong.');
+                // }
             }
         }
     });
@@ -51,7 +52,7 @@ const PostedBlogs: React.FC<{ id: string }> = (props) => {
             </div>
             <div className='w-full'>
                 {
-                    data.length > 0 ?
+                    data?.length > 0 ?
                     (
                         <div className='w-full p-2 flex items-center justify-center'>
                             <h1 className='text-sm text-gray-500 font-medium'>No blogs</h1>
