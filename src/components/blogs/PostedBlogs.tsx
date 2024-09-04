@@ -88,8 +88,9 @@ const PostedBlogs: React.FC<{ id: string }> = (props) => {
                                             <td className="px-6 py-4">
                                                 {blog.downvotes}
                                             </td>
-                                            <td className="px-6 py-4">
-                                                <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                                            <td className="px-6 py-4 flex gap-2">
+                                                <a href="#" className="font-medium text-darkCyan hover:underline">Edit</a>
+                                                <a href="#" className="font-medium text-red-600 hover:underline">Delete</a>
                                             </td>
                                         </tr>
                                     ))}
