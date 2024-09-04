@@ -1,5 +1,3 @@
-import React from 'react'
-
 function LoadingBlogCard() {
     return (
         <div className='w-full flex flex-col gap-2'>

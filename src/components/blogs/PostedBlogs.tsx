@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { cookieStore, errorToast, serverURL } from '../links';
+import React, { useState } from 'react';
+import { cookieStore, serverURL } from '../links';
 
 const PostedBlogs: React.FC<{ id: string }> = (props) => {
     const { token } = cookieStore();
-    const [limit, setLimit] = useState<number>(10); // Number of items per page
+    const limit:number = 10; // Number of items per page
     const [page, setPage] = useState<number>(1); // Current page
 
-    const { data,isLoading,refetch } = useQuery({
+    const { data} = useQuery({
         queryKey: ['postedblogs', page, limit, token],
         queryFn: async () => {
             try {
