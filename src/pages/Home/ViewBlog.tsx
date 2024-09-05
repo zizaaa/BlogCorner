@@ -1,27 +1,12 @@
-import { useNavigate, useParams } from 'react-router-dom'
-import { BlogLayout, cookieStore, PopularBlogs, serverURL, ShareButtons } from '../../components/links'
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { useParams } from 'react-router-dom'
+import { BlogLayout, cookieStore, fetchSingleBlog, PopularBlogs, ShareButtons } from '../../components/links'
 import { useEffect } from 'react';
 
 function ViewBlog() {
     const { getToken } = cookieStore();
     const { id } = useParams<{id:string}>();
-    const navigate = useNavigate();
 
-    const { data,isLoading } = useQuery({
-        queryKey:['singleBlog', id],
-        queryFn: async()=>{
-            try {
-                const { data } = await axios.get(`${serverURL}/api/blogs/get/single/blog/${id}`)
-                
-                return data
-            } catch (error) {
-                navigate('/')
-                return;
-            }
-        }
-    })
+    const { data,isLoading } = fetchSingleBlog(id as string)
 
     useEffect(()=>{
         const handleGetCookie = () =>{

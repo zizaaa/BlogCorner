@@ -40,12 +40,14 @@ export interface BlogLayoutProps{
     loading:boolean;
     preview:boolean;
     id?: string;
+    type?:string;
 }
 
 export interface TiptapProps {
     data?:PreviewData | null;
     loading:boolean;
     id?: string;
+    type:string;
 }
 
 export interface BlogCardProps{

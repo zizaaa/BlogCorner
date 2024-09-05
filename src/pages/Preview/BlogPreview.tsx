@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { PreviewData } from '../../types/Data';
 
 function BlogPreview() {
-    const {id} = useParams();
+    const {id,type} = useParams();
 
     const [data, setData] = useState<PreviewData | null>(null);
     const [loading, setLoading] = useState<boolean>(false)
@@ -15,7 +15,13 @@ function BlogPreview() {
         if(!id){
             return navigate('/');
         }
-        const savedData = sessionStorage.getItem(`${id}`);
+        
+        let savedData;
+        if(type === 'update'){
+            savedData = sessionStorage.getItem(`update_${id}`);
+        }else if(type === 'create'){
+            savedData = sessionStorage.getItem(`${id}`);
+        }
 
         if (savedData) {
             setLoading(true)
@@ -35,6 +41,7 @@ function BlogPreview() {
                 loading = {loading}
                 preview = {true}
                 id = {id}
+                type = {type}
             />
         </section>
     )

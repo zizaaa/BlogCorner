@@ -5,7 +5,7 @@ import { BlogLayoutProps } from '../../types/Props';
 import { bookMarked, convertTimestamp, fetchSingleUser, serverURL, useBookmark } from '../links';
 import { Link, useNavigate } from 'react-router-dom';
 
-const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) => {
+const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id, type }) => {
     const content = data ? parse(data.content) : null;
     const navigate = useNavigate();
 
@@ -16,7 +16,11 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) =
     const { data:owner, refetch:refetchOwnerData } = fetchSingleUser(data ? data.owner:null)
 
     const handleNavigate = () =>{
-        navigate(`/post/editor/${id}`);
+        if(type === 'update'){
+            navigate(`/blog/editor/${id}`);
+        }else if(type === 'create'){
+            navigate(`/post/editor/${id}`);
+        }
     }
 
     const bookMark = useBookmark();
@@ -109,7 +113,7 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id }) =
                     <div className="drop-shadow-md h-[30rem]">
                         {/* data?.cover || `${serverURL}/${data?.cover}` */}
                         <img 
-                            src={`${preview ? data?.cover:`${serverURL}/${data?.cover}`}`}
+                            src={`${preview && type !== 'update'  ? data?.cover:`${serverURL}/${data?.cover}`}`}
                             className="object-fit w-full h-full rounded-md drop-shadow-md"
                             loading="lazy"
                             alt={data?.title || 'Blog cover image'}

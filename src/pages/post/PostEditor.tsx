@@ -13,11 +13,6 @@ function PostEditor() {
 
   const navigate = useNavigate();
 
-  if(!id){
-    navigate('/')
-    return;
-  }
-
   useEffect(() => {
 
     if(!id){
@@ -50,6 +45,7 @@ function PostEditor() {
         id = {id}
         data = {data}
         loading = {loading}
+        type = 'create'
       />
     </div>
   );

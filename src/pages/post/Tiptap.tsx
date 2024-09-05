@@ -40,6 +40,8 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
     const [title, setTitle] = useState<string>('')
     const [isCoverChange, setCoverChange] = useState<boolean>(false);
     const [isCoverLoading, setLoading] = useState<boolean>(false);
+    const [isNewCover, setNewCover] = useState<boolean>(false);
+
 
     const editor = useEditor({
         extensions,
@@ -84,6 +86,37 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
         }
     });
 
+    const updateMutation = useMutation({
+        mutationFn: async(formData:FormData): Promise<void>=>{
+            try {
+                const { data } = await axios.put(`${serverURL}/api/blogs/update`,formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization:`Bearer ${token}`
+                    }
+                });
+
+                //remove values
+                handleCancelCoverChange()
+                setTitle('');
+                editor.commands.setContent("");
+
+                //toast
+                successToast(`${data.message}`);
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if(error.response?.data === 'Unauthorized'){
+                        errorToast("Please log in");
+                    }else{
+                        errorToast(error.response?.data.message);
+                    }
+                } else {
+                    errorToast('Something went wrong.');
+                }
+            }
+        }
+    })
+
     //file upload
     const handleFileUpload = (fileRef: React.RefObject<HTMLInputElement>, setSrc:React.Dispatch<React.SetStateAction<string>>): void=>{
         const file = fileRef.current?.files?.[0];
@@ -99,6 +132,7 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
                 reader.readAsDataURL(file);
 
                 setCoverChange(true);
+                setNewCover(true);
             }
     }
 
@@ -115,13 +149,14 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
         }
         setCoverSrc('');
         setCoverChange(false);
+        setNewCover(false);
     }
 
     // validate blog
     const isValidBlog = (blog:BlogData | PreviewData)=>{
 
         if(!blog.cover){
-            errorToast('Please add your cover image!');
+            errorToast('Please add your cover image or upload it again!');
             return false
         }
 
@@ -190,15 +225,66 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
         sessionStorage.setItem(`${props.id}`, blogJson);
         
         //navigate
-        navigate(`/blog/preview/${props.id}`);
+        navigate(`/blog/preview/${props.id}/${props.type}`);
     };  
+
+    //if blog is just to edit and already in db
+    const handleUpdate = () =>{
+        const editorContent = editor.getHTML(); 
+        
+        const blog:BlogData = {
+            cover: coverRef.current?.files ? coverRef.current.files[0] : null,
+            title:title,
+            content:editorContent
+        }
+
+        if (!isValidBlog(blog)) {
+            return;
+        }
+        
+        // send to db
+        const formData = new FormData();
+        if (blog.cover && blog.title && blog.content && props.id) {
+            formData.append('id', props.id);
+            formData.append('title', blog.title);
+            formData.append('cover', blog.cover);
+            formData.append('content', blog.content);
+
+            updateMutation.mutate(formData)
+        }
+    }
+    const handlePreviewBlog = () =>{
+        const editorContent = editor.getHTML(); 
+    
+        const blog:PreviewData = {
+            cover: coverSrc,
+            title: title,
+            content: editorContent,
+            owner:props.data?.owner as number,
+            timestamp:generateTimestamp()
+        };
+        
+        if (!isValidBlog(blog)) {
+            return;
+        }
+        
+        // Convert the blog object to a JSON string
+        const blogJson = JSON.stringify(blog);
+    
+        // Save to session storage
+        sessionStorage.setItem(`update_${props.id}`, blogJson);
+
+        //navigate
+        navigate(`/blog/preview/${props.id}/${props.type}`);
+    }
     
     useEffect(()=>{
         if(props.data && editor && props.data.cover){
+            setNewCover(false);
             //set cover change to true
             setCoverChange(true);
             // set cover
-            setCoverSrc(props.data.cover);
+            setCoverSrc(props.type === 'update' ? props.data.cover:props.data.cover);
             //set title
             setTitle(props.data.title);
             //set content
@@ -234,11 +320,22 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
                                         </button>
                                     </div>
                                     <div className='absolute top-0 right-0 bottom-0 left-0 backdrop-blur-none group-hover:backdrop-blur-lg transition-all duration-300 bg-transparent group-hover:bg-[#21202048]'></div>
-                                    <img 
-                                        src={coverSrc}
-                                        className='object-contain w-full h-full bg-[#FFFF]'
-                                        loading='lazy'
-                                    />
+                                    {
+                                        isNewCover ?
+                                        (
+                                            <img 
+                                                src={coverSrc}
+                                                className='object-contain w-full h-full bg-[#FFFF]'
+                                                loading='lazy'
+                                            />
+                                        ):(
+                                            <img 
+                                                src={props.type === 'update' ? `${serverURL}/${coverSrc}`:coverSrc}
+                                                className='object-contain w-full h-full bg-[#FFFF]'
+                                                loading='lazy'
+                                            />
+                                        )
+                                    }
                                 </div>
                             )
                         ):(null)
@@ -410,34 +507,72 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
                 <EditorContent editor={editor} className='prose w-full max-h-[19rem] overflow-y-auto p-2'/>
             </div>
             <div className='flex flex-row items-center justify-end gap-5 w-full'>
-                <button
-                    onClick={handlePreview}
-                    className="flex items-center gap-2 mt-4 px-4 py-2 rounded-sm border-[1px] border-gray-400 text-gray-500"
-                >
-                    <span>
-                        <IoEyeSharp/>
-                    </span>
-                    Preview
-                </button>
-                <button
-                    onClick={handleSubmit}
-                    className={`flex items-center justify-center gap-2 mt-4 w-28 py-2 bg-green-500 text-white rounded-sm ${mutation.isPending ? 'cursor-not-allowed':'cursor-pointer'}`}
-                    disabled={mutation.isPending}
-                >
-                    {
-                        mutation.isPending ?
-                        (
-                            Spinner({textColor:'#FFFFFF',fillColor:'#000000'})
-                        ):(
-                            <>
+                {
+                    props.type === 'update' ?
+                    (
+                        <>
+                            <button
+                                onClick={handlePreviewBlog}
+                                className="flex items-center gap-2 mt-4 px-4 py-2 rounded-sm border-[1px] border-gray-400 text-gray-500"
+                            >
                                 <span>
-                                    <IoSend/>
+                                    <IoEyeSharp/>
                                 </span>
-                                Publish
-                            </>
-                        )
-                    }
-                </button>
+                                Preview
+                            </button>
+                            <button
+                                onClick={handleUpdate}
+                                className={`flex items-center justify-center gap-2 mt-4 w-28 py-2 bg-green-500 text-white rounded-sm ${mutation.isPending ? 'cursor-not-allowed':'cursor-pointer'}`}
+                                disabled={updateMutation.isPending}
+                            >
+                                {
+                                    updateMutation.isPending ?
+                                    (
+                                        Spinner({textColor:'#FFFFFF',fillColor:'#000000'})
+                                    ):(
+                                        <>
+                                            <span>
+                                                <IoSend/>
+                                            </span>
+                                            Update
+                                        </>
+                                    )
+                                }
+                            </button>
+                        </>
+                    ):(
+                        <>
+                            <button
+                                onClick={handlePreview}
+                                className="flex items-center gap-2 mt-4 px-4 py-2 rounded-sm border-[1px] border-gray-400 text-gray-500"
+                            >
+                                <span>
+                                    <IoEyeSharp/>
+                                </span>
+                                Preview
+                            </button>
+                            <button
+                                onClick={handleSubmit}
+                                className={`flex items-center justify-center gap-2 mt-4 w-28 py-2 bg-green-500 text-white rounded-sm ${mutation.isPending ? 'cursor-not-allowed':'cursor-pointer'}`}
+                                disabled={mutation.isPending}
+                            >
+                                {
+                                    mutation.isPending ?
+                                    (
+                                        Spinner({textColor:'#FFFFFF',fillColor:'#000000'})
+                                    ):(
+                                        <>
+                                            <span>
+                                                <IoSend/>
+                                            </span>
+                                            Publish
+                                        </>
+                                    )
+                                }
+                            </button>
+                        </>
+                    )
+                }
             </div>
         </div>
     );

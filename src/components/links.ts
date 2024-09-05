@@ -40,6 +40,8 @@ import Password from "./modals/Password";
 import fetchSingleUser from "../hooks/tanstack/fetchSingleUser";
 import ProfileComponent from "./cards/ProfileComponent";
 import PostedBlogs from "./blogs/PostedBlogs";
+import BlogEditor from "./blogs/BlogEditor";
+import { fetchSingleBlog } from "../hooks/tanstack/fetchSingleBlog";
 
 export {
     RootLayout,
@@ -83,5 +85,7 @@ export {
     Password,
     fetchSingleUser,
     ProfileComponent,
-    PostedBlogs
+    PostedBlogs,
+    BlogEditor,
+    fetchSingleBlog
 }

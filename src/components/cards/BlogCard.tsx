@@ -123,33 +123,35 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
         <section
             className="border-[1px] p-3 rounded-sm transition-all duration-100 bg-semiWhite dark:bg-semiBlack dark:border-semiBlack"
         >
-            <div className="flex flex-row justify-between max-[500px]:flex-col dark:text-grayishWhite">
-                <h1 className="text-2xl">
-                    {blog.title}
-                </h1>
-                <span className="text-sm font-thin w-28 text-end max-[500px]:text-start">
-                    {timeAgo(blog.created_at)}
-                </span>
-            </div>
-            <div className="flex flex-row w-full gap-4 mt-3 max-[500px]:flex-col">
-                <div className="w-28 h-28 max-[500px]:w-full max-[500px]:h-40">
-                    <img
-                        src={`${serverURL}/${blog.cover_img}`}
-                        alt={blog.title}
-                        className="object-cover w-full h-full"
-                        loading="lazy"
-                    />
+            <div onClick={handleReadMore} className="cursor-pointer">
+                <div className="flex flex-row justify-between max-[500px]:flex-col dark:text-grayishWhite">
+                    <h1 className="text-2xl">
+                        {blog.title}
+                    </h1>
+                    <span className="text-sm font-thin w-28 text-end max-[500px]:text-start">
+                        {timeAgo(blog.created_at)}
+                    </span>
                 </div>
-                <div className="flex-1">
-                    {parse(truncatedContent)}
-                    {textContent.length > 300 && (
-                        <span
-                            className="text-darkCyan cursor-pointer ml-1"
-                            onClick={handleReadMore}
-                        >
-                            read more
-                        </span>
-                    )}
+                <div className="flex flex-row w-full gap-4 mt-3 max-[500px]:flex-col">
+                    <div className="w-28 h-28 max-[500px]:w-full max-[500px]:h-40">
+                        <img
+                            src={`${serverURL}/${blog.cover_img}`}
+                            alt={blog.title}
+                            className="object-cover w-full h-full"
+                            loading="lazy"
+                        />
+                    </div>
+                    <div className="flex-1">
+                        {parse(truncatedContent)}
+                        {textContent.length > 300 && (
+                            <span
+                                className="text-darkCyan cursor-pointer ml-1"
+                                onClick={handleReadMore}
+                            >
+                                read more
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
             <div className="flex flex-row p-2 gap-5 text-darkishGray mt-5 cursor-default">

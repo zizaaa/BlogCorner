@@ -72,7 +72,7 @@ const BookMarked:React.FC<BookMarkProps> = (props) => {
                     </button>
                 </div>
             </div>
-            <div className="flex flex-row w-full gap-4 mt-3 max-[500px]:flex-col">
+            <div onClick={handleReadMore} className="flex flex-row w-full gap-4 mt-3 max-[500px]:flex-col cursor-pointer">
                 <div className="w-28 h-28 max-[500px]:w-full max-[500px]:h-40">
                     <img
                         src={`${serverURL}/${props.data.cover_img}`}

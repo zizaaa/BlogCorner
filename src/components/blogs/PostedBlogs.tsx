@@ -1,14 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { cookieStore, serverURL } from '../links';
+import { cookieStore, errorToast, serverURL, successToast } from '../links';
+import { Link, useNavigate } from 'react-router-dom';
 
 const PostedBlogs: React.FC<{ id: string }> = (props) => {
     const { token } = cookieStore();
+
+    const navigate = useNavigate();
+
     const limit:number = 10; // Number of items per page
     const [page, setPage] = useState<number>(1); // Current page
 
-    const { data} = useQuery({
+    const { data, refetch } = useQuery({
         queryKey: ['postedblogs', page, limit, token],
         queryFn: async () => {
             try {
@@ -20,20 +24,37 @@ const PostedBlogs: React.FC<{ id: string }> = (props) => {
                 return data;
             } catch (error) {
                 console.error(error)
-                // if (axios.isAxiosError(error)) {
-                //     if (error.response?.data === 'Unauthorized') {
-                //         errorToast("Please log in");
-                //         return;
-                //     } else {
-                //         errorToast(error.response?.data.message);
-                //         return;
-                //     }
-                // } else {
-                //     errorToast('Something went wrong.');
-                // }
             }
         }
     });
+
+    const mutation = useMutation({
+        mutationFn: async(id:string)=>{
+            try {
+                const { data } = await axios.delete(`${serverURL}/api/blogs/delete/${id}`,{
+                    headers:{
+                        Authorization:`Bearer ${token}`
+                    }
+                })
+
+                //toast
+                successToast(`${data.message}`);
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if(error.response?.data === 'Unauthorized'){
+                        errorToast("Please log in");
+                    }else{
+                        errorToast(error.response?.data.message);
+                    }
+                } else {
+                    errorToast('Something went wrong.');
+                }
+            }
+        },
+        onSuccess:()=>{
+            refetch();
+        }
+    })
 
     // Calculate total pages
     const totalPages = Math.ceil((data?.total || 0) / limit);
@@ -44,6 +65,11 @@ const PostedBlogs: React.FC<{ id: string }> = (props) => {
             setPage(newPage);
         }
     };
+
+    const handleClearSession = (id:string) =>{
+        sessionStorage.clear();
+        navigate(`/blog/editor/${id}`)
+    }
 
     return (
         <div>
@@ -89,8 +115,8 @@ const PostedBlogs: React.FC<{ id: string }> = (props) => {
                                                 {blog.downvotes}
                                             </td>
                                             <td className="px-6 py-4 flex gap-2">
-                                                <a href="#" className="font-medium text-darkCyan hover:underline">Edit</a>
-                                                <a href="#" className="font-medium text-red-600 hover:underline">Delete</a>
+                                                <button onClick={()=>{handleClearSession(blog.id)}} className="font-medium text-darkCyan hover:underline">Edit</button>
+                                                <button onClick={()=>{mutation.mutate(blog.id)}} className="font-medium text-red-600 hover:underline">Delete</button>
                                             </td>
                                         </tr>
                                     ))}
