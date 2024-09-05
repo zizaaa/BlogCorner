@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 import { useQuery } from "@tanstack/react-query";
 import { serverURL } from "../serverUrl";
 
-const fetchSingleUser = (userId:number | null)=>{
+const fetchSingleUser = (userId:number | string | null)=>{
     return useQuery({
         queryKey:['singleUser'],
         queryFn: async()=>{

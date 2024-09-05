@@ -78,7 +78,7 @@ const PostedBlogs: React.FC<{ id: string }> = (props) => {
             </div>
             <div className='w-full'>
                 {
-                    data?.length > 0 ?
+                    data?.total <= 0 ?
                     (
                         <div className='w-full p-2 flex items-center justify-center'>
                             <h1 className='text-sm text-gray-500 font-medium'>No blogs</h1>

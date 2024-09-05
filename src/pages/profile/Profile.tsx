@@ -12,7 +12,7 @@ function Profile() {
     const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false);
 
     const { data, refetch, isLoading} = fetchUser();
-
+    console.log(data)
     useEffect(()=>{
         const handleGetToken = () =>{
             getToken();

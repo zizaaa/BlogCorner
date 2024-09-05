@@ -49,7 +49,7 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ data, loading, preview, id, typ
                         <h1 className="text-3xl font-bold dark:text-white">
                             {data?.title || 'title here'}
                         </h1>
-                        <Link to='' className='text-sm text-gray-500 hover:underline'>{owner?.username}</Link>
+                        <Link to={`/visit/profile/${owner?.id}`} className='text-sm text-gray-500 hover:underline'>{owner?.username}</Link>
                     </div>
                 )}
                 {!preview && !loading && (

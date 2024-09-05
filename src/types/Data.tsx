@@ -29,8 +29,6 @@ export interface Blog {
     title:string;
     content:string;
     created_at:string;
-    down_vote:number;
-    up_vote:number;
     owner:number;
 
 }
