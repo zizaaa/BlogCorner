@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { cookieStore, errorToast, serverURL, successToast } from '../links';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const PostedBlogs: React.FC<{ id: string }> = (props) => {
     const { token } = cookieStore();
