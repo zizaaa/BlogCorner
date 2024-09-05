@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaAlignCenter, FaAlignLeft, FaAlignRight, FaBold, FaCode, FaHeading, FaItalic, FaParagraph, FaRedo, FaStrikethrough, FaTrashAlt, FaUnderline, FaUndo, GoListOrdered, IoEyeSharp, IoSend, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, MdFormatListBulleted, TbBlockquote, VscHorizontalRule } from '../../components/icons'
 import { useEditor, EditorContent } from '@tiptap/react';
-import { BlogData, PreviewData } from '../../types/Data';
+import { BlogData, BlogUpdateData, BlogUpdateData2, PreviewData } from '../../types/Data';
 import { cookieStore, errorToast, fetchUser, generateTimestamp, serverURL, Spinner, successToast } from '../../components/links';
 import { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -116,6 +116,35 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
             }
         }
     })
+    const updateExistingImageMutation = useMutation({
+        mutationFn: async(formData:BlogUpdateData2): Promise<void>=>{
+            try {
+                const { data } = await axios.put(`${serverURL}/api/blogs/update/2`,formData, {
+                    headers: {
+                        Authorization:`Bearer ${token}`
+                    }
+                });
+
+                //remove values
+                handleCancelCoverChange()
+                setTitle('');
+                editor.commands.setContent("");
+
+                //toast
+                successToast(`${data.message}`);
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if(error.response?.data === 'Unauthorized'){
+                        errorToast("Please log in");
+                    }else{
+                        errorToast(error.response?.data.message);
+                    }
+                } else {
+                    errorToast('Something went wrong.');
+                }
+            }
+        }
+    })
 
     //file upload
     const handleFileUpload = (fileRef: React.RefObject<HTMLInputElement>, setSrc:React.Dispatch<React.SetStateAction<string>>): void=>{
@@ -153,7 +182,7 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
     }
 
     // validate blog
-    const isValidBlog = (blog:BlogData | PreviewData)=>{
+    const isValidBlog = (blog:BlogData | PreviewData | BlogUpdateData)=>{
 
         if(!blog.cover){
             errorToast('Please add your cover image or upload it again!');
@@ -231,9 +260,9 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
     //if blog is just to edit and already in db
     const handleUpdate = () =>{
         const editorContent = editor.getHTML(); 
-        
-        const blog:BlogData = {
-            cover: coverRef.current?.files ? coverRef.current.files[0] : null,
+
+        const blog:BlogUpdateData = {
+            cover: coverRef.current?.files && coverRef.current.files.length > 0 ? coverRef.current.files[0] :props.type === 'update' ? coverSrc:'',
             title:title,
             content:editorContent
         }
@@ -244,13 +273,21 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
         
         // send to db
         const formData = new FormData();
-        if (blog.cover && blog.title && blog.content && props.id) {
+        if (coverRef.current?.files && coverRef.current.files.length > 0 && blog.cover && blog.title && blog.content && props.id) {
             formData.append('id', props.id);
             formData.append('title', blog.title);
             formData.append('cover', blog.cover);
             formData.append('content', blog.content);
 
             updateMutation.mutate(formData)
+        }else if(coverRef.current?.files && coverRef.current.files.length <= 0 && blog.cover && blog.title && blog.content && props.id && props.type === 'update'){
+            const blogData = {
+                id:props.id,
+                title:blog.title,
+                path:coverSrc,
+                content:blog.content
+            }
+            updateExistingImageMutation.mutate(blogData)
         }
     }
     const handlePreviewBlog = () =>{
@@ -279,12 +316,13 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
     }
     
     useEffect(()=>{
-        if(props.data && editor && props.data.cover){
+        
+        if(props.data && editor){
             setNewCover(false);
             //set cover change to true
             setCoverChange(true);
             // set cover
-            setCoverSrc(props.type === 'update' ? props.data.cover:props.data.cover);
+            setCoverSrc(props.data.cover as string);
             //set title
             setTitle(props.data.title);
             //set content
@@ -292,7 +330,7 @@ const Tiptap:React.FC<TiptapProps> = (props) => {
         }else{
             editor.commands.setContent('');
         }
-    },[props.id,props.loading,props.data])
+    },[props.data,editor])
 
     return (
         <div className="m-8">

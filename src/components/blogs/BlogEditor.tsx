@@ -21,7 +21,7 @@ function BlogEditor() {
     }
 
     const { data:savedBlogData } = useQuery({
-        queryKey:['singlePosted',token,id],
+        queryKey:['singlePosted',token,id,loading],
         queryFn: async()=>{
             try {
                 const { data } = await axios.get(`${serverURL}/api/blogs/get/single/posted/${id}`,{
@@ -70,7 +70,7 @@ function BlogEditor() {
         }else if(!savedData && savedBlogData) {
             setData(savedBlogData);
         }
-    },[id,token,savedBlogData])
+    },[id,token,savedBlogData,loading])
 
     return (
         <div>

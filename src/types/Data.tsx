@@ -3,6 +3,17 @@ export interface BlogData{
     title:string;
     content:string;
 }
+export interface BlogUpdateData{
+    cover:File | string ;
+    title:string;
+    content:string;
+    path?:string;
+}
+export interface BlogUpdateData2{
+    title:string;
+    content:string;
+    path?:string;
+}
 
 export interface PreviewData {
     cover:string | null;

@@ -42,6 +42,7 @@ import ProfileComponent from "./cards/ProfileComponent";
 import PostedBlogs from "./blogs/PostedBlogs";
 import BlogEditor from "./blogs/BlogEditor";
 import { fetchSingleBlog } from "../hooks/tanstack/fetchSingleBlog";
+import VisitProfile from "../pages/profile/VisitProfile";
 
 export {
     RootLayout,
@@ -87,5 +88,6 @@ export {
     ProfileComponent,
     PostedBlogs,
     BlogEditor,
-    fetchSingleBlog
+    fetchSingleBlog,
+    VisitProfile
 }

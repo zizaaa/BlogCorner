@@ -14,7 +14,8 @@ import
         PostEditor,
         BlogPreview,
         Profile,
-        BlogEditor
+        BlogEditor,
+        VisitProfile
     } from '../components/links'
 
 export const router = createBrowserRouter([
@@ -71,6 +72,14 @@ export const router = createBrowserRouter([
                 element:(
                     <ProtectedRoute>
                         <BlogEditor/>
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path:'visit/profile/:id',
+                element:(
+                    <ProtectedRoute>
+                        <VisitProfile/>
                     </ProtectedRoute>
                 )
             }

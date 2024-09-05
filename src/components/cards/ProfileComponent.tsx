@@ -50,19 +50,19 @@ const ProfileComponent:React.FC<ProfileComponentProps> =(props)=> {
     }
 
     const handleShowNameModal = ()=>{
-        if(props.setShowNameModal){
+        if(props.setShowNameModal && props.type === 'owner'){
             props.setShowNameModal(true)
         }
     }
 
     const handleShowEmailModal = ()=>{
-        if(props.setShowEmailModal){
+        if(props.setShowEmailModal && props.type === 'owner'){
             props.setShowEmailModal(true)
         }
     }
 
     const handleShowPasswordModal = ()=>{
-        if(props.setShowPasswordModal){
+        if(props.setShowPasswordModal && props.type === 'owner'){
             props.setShowPasswordModal(true)
         }
     }
