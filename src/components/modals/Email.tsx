@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
 const Email:React.FC<NameModalProps> = (props) => {
-    const { token,deleteCookie } = cookieStore();
+    const { token } = cookieStore();
     const [email, setEmail] = useState<string>('');
 
     const mutation = useMutation({
