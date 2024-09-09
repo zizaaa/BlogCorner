@@ -45,4 +45,5 @@ export interface LogedInUser{
     username:string;
     avatar?:string;
     email:string;
+    isverified:boolean;
 }

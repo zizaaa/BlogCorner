@@ -1,8 +1,10 @@
+import { Toaster } from 'react-hot-toast'
 import { Outlet } from 'react-router-dom'
 
 function FormLayout() {
     return (
-        <main className='w-full h-screen flex items-center justify-center font-nunito'>
+        <main className='w-full h-screen flex items-center justify-center font-nunito relative'>
+            <Toaster/>
             <div className='flex flex-row items-center gap-5'>
                 <div>
                     <img 

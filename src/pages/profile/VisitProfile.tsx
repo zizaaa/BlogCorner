@@ -43,7 +43,6 @@ function VisitProfile() {
     useEffect(()=>{
         getToken();
     },[])
-
     return (
         <section className='p-2'>
             <Toaster/>

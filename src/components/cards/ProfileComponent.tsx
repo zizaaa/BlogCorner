@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { FaCamera, FaCheck, FaRegEdit, RxCross2 } from '../icons'
+import { FaCamera, FaCheck, FaRegEdit, MdVerified, RxCross2 } from '../icons'
 import { ProfileComponentProps } from '../../types/Props'
 import { cookieStore, errorToast, serverURL, successToast } from '../links'
 import { useMutation } from '@tanstack/react-query'
@@ -40,6 +40,27 @@ const ProfileComponent:React.FC<ProfileComponentProps> =(props)=> {
         onSuccess:()=>{
             handleRefetch();
             handleCancelChanges();
+        }
+    })
+
+    const verifyMutation = useMutation({
+        mutationFn: async(email:string): Promise<void>=>{
+
+            try {
+                await axios.post(`${serverURL}/api/user/resend/verification`,{email});
+                
+                successToast('We\'ve sent a confirmation email to your inbox. Please check your email to verify your account.');
+            } catch (error) {
+                console.log(error)
+                if (axios.isAxiosError(error)) {
+                    return errorToast(`${error.response?.data.message}`);
+                } else {
+                    // Handle other errors, e.g., network issues, non-Axios errors
+                    console.log(error);
+                    errorToast('Something went wrong!');
+                    return;
+                }
+            }
         }
     })
 
@@ -109,6 +130,17 @@ const ProfileComponent:React.FC<ProfileComponentProps> =(props)=> {
         formData.append('avatar', avatar);
 
         mutation.mutate(formData)
+    }
+
+    const handleResendVerification =  () =>{
+        if(!props.data?.email){
+            return errorToast('Email not found');
+        }
+
+        if(props.type === 'visitor'){
+            return;
+        }
+        verifyMutation.mutate(props.data?.email)
     }
     return (
         <>
@@ -234,9 +266,25 @@ const ProfileComponent:React.FC<ProfileComponentProps> =(props)=> {
                                 <div className='flex flex-row items-center justify-between gap-2 text-gray-600'>
                                     <div className='flex flex-row items-center gap-2'>
                                     <span className=''>Email:</span>
-                                    <h1 className='font-medium'>
-                                        {props.data?.email}
-                                    </h1>
+                                    <div className='flex items-center gap-1'>
+                                        <h1 className='font-medium'>
+                                            {props.data?.email}
+                                        </h1>
+                                        {
+                                            props.data?.isverified ? 
+                                            (
+                                                <span className='text-darkCyan'>
+                                                    <MdVerified/>
+                                                </span>
+                                            ):(
+                                                props.type !== 'visitor' && (
+                                                    <button onClick={handleResendVerification} className='text-sm bg-darkCyan px-1 rounded-sm text-white drop-shadow-md'>
+                                                        verify
+                                                    </button>
+                                                )
+                                            )
+                                        }
+                                    </div>
                                     </div>
                                     {
                                         props.type !== 'visitor' &&

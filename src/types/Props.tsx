@@ -82,6 +82,11 @@ export interface NameModalProps{
     refetch:()=> void;
 }
 
+export interface ResendModal{
+    showModal:boolean;
+    setShowModal:React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 export interface ProfileComponentProps{
     data:LogedInUser
     setShowNameModal?:React.Dispatch<React.SetStateAction<boolean>>;
